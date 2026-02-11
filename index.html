@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local Mind — In-Browser AI</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Analytics: Umami (privacy-friendly, cookie-free) -->
+<!-- Replace data-website-id with your Umami website ID -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="YOUR_WEBSITE_ID_HERE"></script>
+<style>
+  :root {
+    --bg: #0c0c0e;
+    --surface: #141418;
+    --surface-2: #1c1c22;
+    --border: #2a2a34;
+    --text: #e8e6e1;
+    --text-dim: #8a8890;
+    --text-faint: #55535c;
+    --accent: #c4f06e;
+    --accent-dim: #8aaa4e;
+    --accent-glow: rgba(196, 240, 110, 0.08);
+    --user-bg: #1e2a14;
+    --radius: 12px;
+    --font-mono: 'DM Mono', monospace;
+    --font-serif: 'Instrument Serif', Georgia, serif;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    overflow: hidden;
+  }
+
+  /* ── Layout ── */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-style: italic;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-meta {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .github-link {
+    color: var(--text-faint);
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .github-link:hover { color: var(--accent); }
+
+  .github-link svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  /* ── Model Selector (shown before loading) ── */
+  .model-selector {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 32px;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .model-selector h2 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 400;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .model-selector h2 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .model-selector p {
+    color: var(--text-dim);
+    text-align: center;
+    max-width: 480px;
+    line-height: 1.6;
+    font-size: 0.92rem;
+  }
+
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 580px;
+  }
+
+  .model-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .model-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-glow), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .model-card:hover {
+    border-color: var(--accent-dim);
+    transform: translateY(-2px);
+  }
+
+  .model-card:hover::before { opacity: 1; }
+
+  .model-card.selected {
+    border-color: var(--accent);
+    background: var(--user-bg);
+  }
+
+  .model-card.cached {
+    border-style: dashed;
+    border-color: var(--accent-dim);
+  }
+
+  .model-card.active-model {
+    border-color: var(--accent);
+    border-style: solid;
+    background: var(--user-bg);
+    box-shadow: 0 0 16px var(--accent-glow), inset 0 0 16px var(--accent-glow);
+    cursor: default;
+  }
+
+  .model-card.active-model:hover {
+    transform: none;
+  }
+
+  .model-card.active-model::before { opacity: 1; }
+
+  .model-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 100px;
+    z-index: 1;
+  }
+
+  .model-badge.badge-cached {
+    color: var(--accent-dim);
+    background: rgba(138, 170, 78, 0.1);
+    border: 1px solid rgba(138, 170, 78, 0.25);
+  }
+
+  .model-badge.badge-active {
+    color: var(--accent);
+    background: rgba(196, 240, 110, 0.12);
+    border: 1px solid rgba(196, 240, 110, 0.3);
+  }
+
+  .unload-btn {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: #e08080;
+    background: rgba(224, 80, 80, 0.08);
+    border: 1px solid rgba(224, 80, 80, 0.25);
+    border-radius: 100px;
+    padding: 5px 14px;
+    margin-top: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    letter-spacing: 0.03em;
+  }
+
+  .unload-btn:hover {
+    background: rgba(224, 80, 80, 0.15);
+    border-color: rgba(224, 80, 80, 0.4);
+  }
+
+  .change-model-btn {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.2s ease;
+  }
+
+  .change-model-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent-dim);
+  }
+
+  .model-card h3 {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .model-card .model-desc {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.4;
+    position: relative;
+  }
+
+  .model-card .model-size {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--accent-dim);
+    margin-top: 8px;
+    position: relative;
+  }
+
+  .model-card .model-time {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    margin-top: 4px;
+    position: relative;
+  }
+
+  .download-notice {
+    max-width: 520px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .download-notice .notice-main {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+  }
+
+  .download-notice .notice-main svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--accent-dim);
+    vertical-align: -2px;
+    margin-right: 4px;
+  }
+
+  .download-notice .notice-detail {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Loading Screen Enhancements ── */
+  .loading-phases {
+    display: flex;
+    gap: 24px;
+    margin-top: 4px;
+  }
+
+  .phase {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+  }
+
+  .phase.active { color: var(--accent); }
+  .phase.done { color: var(--accent-dim); }
+
+  .phase-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .phase.active .phase-dot {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    animation: pulse 1.5s ease infinite;
+  }
+
+  .phase.done .phase-dot { background: var(--accent-dim); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .loading-stats {
+    display: flex;
+    gap: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+  }
+
+  .loading-stats span strong {
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .loading-model-name {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--text-dim);
+  }
+
+  .loading-tip {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    text-align: center;
+    max-width: 380px;
+    line-height: 1.5;
+    margin-top: 8px;
+    transition: opacity 0.3s ease;
+  }
+
+  .webgpu-warning {
+    background: #2a1a1a;
+    border: 1px solid #5a2a2a;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    max-width: 480px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #e8a0a0;
+    line-height: 1.5;
+  }
+
+  .load-btn {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 100px;
+    padding: 14px 40px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+  }
+
+  .load-btn:hover { transform: scale(1.03); filter: brightness(1.1); }
+  .load-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+  }
+
+  /* ── Loading Screen ── */
+  .loading-screen {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 24px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .loading-screen.active { display: flex; }
+
+  .loader-ring {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    animation: spin 1s linear infinite;
+  }
+
+  .loading-label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+
+  .progress-bar-container {
+    width: 100%;
+    max-width: 400px;
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  /* ── Chat Area ── */
+  .chat-container {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .chat-container.active { display: flex; }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+
+  .message {
+    max-width: 85%;
+    padding: 12px 18px;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    line-height: 1.65;
+    animation: msgIn 0.3s ease;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .message.user {
+    align-self: flex-end;
+    background: var(--user-bg);
+    border: 1px solid #2a3a1a;
+    color: var(--text);
+    border-bottom-right-radius: 4px;
+  }
+
+  .message.assistant {
+    align-self: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-bottom-left-radius: 4px;
+  }
+
+  .message.system {
+    align-self: center;
+    background: transparent;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    padding: 8px 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .typing-indicator {
+    display: none;
+    align-self: flex-start;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    border-bottom-left-radius: 4px;
+    gap: 5px;
+  }
+
+  .typing-indicator.active { display: flex; }
+
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    animation: bounce 1.2s infinite;
+  }
+
+  .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+  /* ── Input Area ── */
+  .input-area {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .input-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+    min-height: 50px;
+    max-height: 150px;
+    transition: border-color 0.2s ease;
+  }
+
+  textarea::placeholder { color: var(--text-faint); }
+  textarea:focus { border-color: var(--accent-dim); }
+
+  .send-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .send-btn:hover { transform: scale(1.06); filter: brightness(1.1); }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; filter: none; }
+
+  .send-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--bg);
+  }
+
+  .input-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    header { padding: 16px 16px 12px; }
+    .messages { padding: 16px; }
+    .input-area { padding: 12px 16px 20px; }
+    .model-selector h2 { font-size: 1.5rem; }
+    .model-grid { grid-template-columns: 1fr; }
+    .message { max-width: 92%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="logo">Local<span>Mind</span></div>
+    <div class="header-right">
+      <button class="change-model-btn" id="changeModelBtn" onclick="showModelSelector()">Change Model</button>
+      <div class="header-meta" id="headerStatus">WebGPU Powered</div>
+      <a class="github-link" href="https://github.com/isaacpattis/LocalMind" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Model Selection -->
+  <div class="model-selector" id="modelSelector">
+    <h2>Run AI <em>entirely</em> in your browser</h2>
+    <p>No servers, no API keys, no data leaves your device. Powered by WebLLM and WebGPU — everything runs locally on your hardware.</p>
+
+    <div id="webgpuCheck"></div>
+
+    <div class="model-grid" id="modelGrid"></div>
+
+    <div class="download-notice">
+      <div class="notice-main">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        First load downloads model weights to your browser — this is a <strong>one-time download</strong>. After that, the model loads from cache in seconds.
+      </div>
+      <div class="notice-detail">Requires a WebGPU-capable browser (Chrome 113+, Edge 113+)</div>
+    </div>
+
+    <button class="load-btn" id="loadBtn" disabled onclick="loadModel()">Select a model</button>
+  </div>
+
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader-ring"></div>
+    <div class="loading-model-name" id="loadingModelName">—</div>
+    <div class="loading-label" id="loadingLabel">Initializing engine…</div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="loading-phases">
+      <div class="phase active" id="phaseDownload"><span class="phase-dot"></span> Download</div>
+      <div class="phase" id="phaseCompile"><span class="phase-dot"></span> Compile</div>
+      <div class="phase" id="phaseReady"><span class="phase-dot"></span> Ready</div>
+    </div>
+    <div class="loading-stats" id="loadingStats">
+      <span id="statProgress">0%</span>
+      <span id="statSize">—</span>
+      <span id="statElapsed">0s elapsed</span>
+    </div>
+    <div class="loading-tip" id="loadingTip">Downloading model weights — this only happens once, then it's cached locally.</div>
+  </div>
+
+  <!-- Chat Interface -->
+  <div class="chat-container" id="chatContainer">
+    <div class="messages" id="messages">
+      <div class="message system">Model loaded · all processing is local</div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-row">
+        <div class="input-wrapper">
+          <textarea
+            id="userInput"
+            placeholder="Say something…"
+            rows="1"
+            onkeydown="handleKey(event)"
+            oninput="autoResize(this)"
+          ></textarea>
+        </div>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div class="input-meta">
+        <span id="modelLabel">—</span>
+        <span id="tokenInfo">Ready</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+
+  // ── Available models (curated for reasonable browser download) ──
+  const MODELS = [
+    {
+      id: "SmolLM2-360M-Instruct-q4f16_1-MLC",
+      name: "SmolLM2 360M",
+      desc: "Tiny & fast. Good for quick experiments.",
+      size: "~250 MB",
+      sizeMB: 250,
+      time: "~20s – 1 min"
+    },
+    {
+      id: "SmolLM2-1.7B-Instruct-q4f16_1-MLC",
+      name: "SmolLM2 1.7B",
+      desc: "Great balance of size and capability.",
+      size: "~1 GB",
+      sizeMB: 1000,
+      time: "~1 – 3 min"
+    },
+    {
+      id: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
+      name: "Llama 3.2 1B",
+      desc: "Meta's compact model. Strong reasoning.",
+      size: "~700 MB",
+      sizeMB: 700,
+      time: "~1 – 2 min"
+    },
+    {
+      id: "Phi-3.5-mini-instruct-q4f16_1-MLC",
+      name: "Phi-3.5 Mini",
+      desc: "Microsoft's capable small model.",
+      size: "~2.2 GB",
+      sizeMB: 2200,
+      time: "~3 – 6 min"
+    },
+  ];
+
+  let selectedModel = null;
+  let activeModelId = null;
+  let engine = null;
+  let isGenerating = false;
+  let chatHistory = [];
+
+  // ── Check WebGPU Support ──
+  async function checkWebGPU() {
+    const container = document.getElementById("webgpuCheck");
+    if (!navigator.gpu) {
+      container.innerHTML = `<div class="webgpu-warning">
+        <strong>WebGPU not available.</strong><br>
+        Please use Chrome 113+, Edge 113+, or another WebGPU-enabled browser.
+      </div>`;
+      document.getElementById("loadBtn").style.display = "none";
+      return false;
+    }
+    try {
+      const adapter = await navigator.gpu.requestAdapter();
+      if (!adapter) throw new Error("No adapter");
+      return true;
+    } catch {
+      container.innerHTML = `<div class="webgpu-warning">
+        WebGPU adapter not found. Your GPU may not be supported.
+      </div>`;
+      document.getElementById("loadBtn").style.display = "none";
+      return false;
+    }
+  }
+
+  // ── Check which models are cached in browser storage ──
+  async function getCachedModelIds() {
+    try {
+      const cacheNames = await caches.keys();
+      const cachedIds = new Set();
+      for (const m of MODELS) {
+        if (cacheNames.some(name => name.includes(m.id))) {
+          cachedIds.add(m.id);
+        }
+      }
+      return cachedIds;
+    } catch {
+      return new Set();
+    }
+  }
+
+  // ── Build Model Grid ──
+  async function buildModelGrid() {
+    const grid = document.getElementById("modelGrid");
+    grid.innerHTML = "";
+    selectedModel = null;
+
+    const cachedIds = await getCachedModelIds();
+
+    MODELS.forEach((m) => {
+      const isActive = m.id === activeModelId;
+      const isCached = cachedIds.has(m.id);
+
+      const card = document.createElement("div");
+      card.className = "model-card";
+      if (isActive) card.classList.add("active-model");
+      else if (isCached) card.classList.add("cached");
+
+      let badgeHTML = "";
+      if (isActive) {
+        badgeHTML = `<span class="model-badge badge-active">Active</span>`;
+      } else if (isCached) {
+        badgeHTML = `<span class="model-badge badge-cached">Cached</span>`;
+      }
+
+      let unloadHTML = "";
+      if (isActive) {
+        unloadHTML = `<button class="unload-btn" data-model-id="${m.id}">Unload Model</button>`;
+      }
+
+      card.innerHTML = `
+        ${badgeHTML}
+        <h3>${m.name}</h3>
+        <div class="model-desc">${m.desc}</div>
+        <div class="model-size">${m.size}</div>
+        <div class="model-time">${isCached ? "✓ Cached locally" : "⏱ First download: " + m.time}</div>
+        ${unloadHTML}
+      `;
+
+      // Unload button handler (stop propagation so card click doesn't fire)
+      const unloadBtn = card.querySelector(".unload-btn");
+      if (unloadBtn) {
+        unloadBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          unloadModel();
+        });
+      }
+
+      card.addEventListener("click", () => {
+        // Don't re-select the already active model
+        if (isActive) return;
+
+        document.querySelectorAll(".model-card").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        selectedModel = m;
+        const btn = document.getElementById("loadBtn");
+        btn.disabled = false;
+        if (activeModelId) {
+          btn.textContent = `Switch to ${m.name}`;
+        } else if (isCached) {
+          btn.textContent = `Load ${m.name}`;
+        } else {
+          btn.textContent = `Download & Load ${m.name}`;
+        }
+      });
+
+      grid.appendChild(card);
+    });
+
+    // Reset load button
+    const btn = document.getElementById("loadBtn");
+    if (activeModelId) {
+      btn.disabled = true;
+      btn.textContent = "Select a different model";
+    } else {
+      btn.disabled = true;
+      btn.textContent = "Select a model";
+    }
+  }
+
+  // ── Reset Loading Screen ──
+  function resetLoadingScreen() {
+    const loadScreen = document.getElementById("loadingScreen");
+    loadScreen.classList.remove("active");
+    loadScreen.style.display = "";
+    document.getElementById("progressBar").style.width = "0%";
+    document.getElementById("progressBar").style.background = "";
+    document.getElementById("loadingLabel").textContent = "Initializing engine…";
+    document.getElementById("loadingModelName").textContent = "—";
+    document.getElementById("statProgress").textContent = "0%";
+    document.getElementById("statSize").textContent = "—";
+    document.getElementById("statElapsed").textContent = "0s elapsed";
+    document.getElementById("loadingTip").textContent = "Downloading model weights — this only happens once, then it's cached locally.";
+
+    // Reset phase indicators
+    const phaseDownload = document.getElementById("phaseDownload");
+    const phaseCompile = document.getElementById("phaseCompile");
+    const phaseReady = document.getElementById("phaseReady");
+    [phaseDownload, phaseCompile, phaseReady].forEach(p => p.classList.remove("active", "done"));
+    phaseDownload.classList.add("active");
+  }
+
+  // ── Show Model Selector ──
+  window.showModelSelector = async function () {
+    // Hide chat
+    document.getElementById("chatContainer").classList.remove("active");
+    // Show model selector
+    const selector = document.getElementById("modelSelector");
+    selector.style.display = "";
+    // Refresh grid with current cache/active states
+    await buildModelGrid();
+  };
+
+  // ── Unload Model ──
+  async function unloadModel() {
+    if (engine) {
+      try { await engine.unload(); } catch (e) { console.error(e); }
+      engine = null;
+    }
+    activeModelId = null;
+    selectedModel = null;
+    chatHistory = [];
+
+    // Hide change model button, reset header
+    document.getElementById("changeModelBtn").style.display = "none";
+    document.getElementById("headerStatus").textContent = "WebGPU Powered";
+
+    // Refresh the grid
+    await buildModelGrid();
+  }
+  window.unloadModel = unloadModel;
+
+  // ── Load Model ──
+  window.loadModel = async function () {
+    if (!selectedModel) return;
+
+    // If switching models, unload the current engine first
+    if (engine && activeModelId) {
+      try { await engine.unload(); } catch (e) { console.error(e); }
+      engine = null;
+      activeModelId = null;
+    }
+
+    // Clear chat for fresh conversation
+    chatHistory = [];
+    document.getElementById("messages").innerHTML =
+      '<div class="message system">Model loaded · all processing is local</div>';
+
+    // Hide selector, reset and show loading screen
+    document.getElementById("modelSelector").style.display = "none";
+    document.getElementById("chatContainer").classList.remove("active");
+    resetLoadingScreen();
+    const loadScreen = document.getElementById("loadingScreen");
+    loadScreen.classList.add("active");
+
+    const label = document.getElementById("loadingLabel");
+    const bar = document.getElementById("progressBar");
+    const statProgress = document.getElementById("statProgress");
+    const statSize = document.getElementById("statSize");
+    const statElapsed = document.getElementById("statElapsed");
+    const tip = document.getElementById("loadingTip");
+
+    // Set model name
+    document.getElementById("loadingModelName").textContent = selectedModel.name;
+
+    // Phase management
+    const phases = {
+      download: document.getElementById("phaseDownload"),
+      compile: document.getElementById("phaseCompile"),
+      ready: document.getElementById("phaseReady"),
+    };
+
+    function setPhase(name) {
+      Object.entries(phases).forEach(([key, el]) => {
+        el.classList.remove("active", "done");
+        if (key === name) el.classList.add("active");
+      });
+      const order = ["download", "compile", "ready"];
+      const idx = order.indexOf(name);
+      for (let i = 0; i < idx; i++) {
+        phases[order[i]].classList.remove("active");
+        phases[order[i]].classList.add("done");
+      }
+    }
+
+    // Tips that rotate
+    const tips = [
+      "Downloading model weights — this only happens once, then it's cached locally.",
+      "All data stays on your device. Nothing is sent to any server.",
+      "Larger models produce better responses but take longer to download.",
+      "After caching, this model will load in just a few seconds next time.",
+      "WebGPU accelerates inference using your device's GPU.",
+    ];
+    let tipIdx = 0;
+    const tipInterval = setInterval(() => {
+      tipIdx = (tipIdx + 1) % tips.length;
+      tip.style.opacity = 0;
+      setTimeout(() => {
+        tip.textContent = tips[tipIdx];
+        tip.style.opacity = 1;
+      }, 300);
+    }, 5000);
+
+    // Elapsed timer
+    const startTime = performance.now();
+    const timerInterval = setInterval(() => {
+      const secs = Math.floor((performance.now() - startTime) / 1000);
+      const min = Math.floor(secs / 60);
+      const sec = secs % 60;
+      statElapsed.textContent = min > 0 ? `${min}m ${sec}s elapsed` : `${sec}s elapsed`;
+    }, 1000);
+
+    let currentPhase = "download";
+    setPhase("download");
+
+    try {
+      engine = await webllm.CreateMLCEngine(selectedModel.id, {
+        initProgressCallback: (report) => {
+          const text = report.text || "";
+          label.textContent = text;
+
+          // Detect phase from WebLLM's progress messages
+          if (text.toLowerCase().includes("compil") || text.toLowerCase().includes("shader")) {
+            if (currentPhase !== "compile") {
+              currentPhase = "compile";
+              setPhase("compile");
+              tip.textContent = "Compiling GPU shaders for your hardware — also cached after first run.";
+            }
+          }
+
+          // Update progress bar and percentage
+          if (report.progress !== undefined) {
+            const pct = Math.round(report.progress * 100);
+            bar.style.width = `${pct}%`;
+            statProgress.textContent = `${pct}%`;
+          }
+
+          // Estimate downloaded size
+          if (report.progress !== undefined && selectedModel.sizeMB) {
+            const downloaded = Math.round(report.progress * selectedModel.sizeMB);
+            if (downloaded >= 1000) {
+              statSize.textContent = `${(downloaded / 1000).toFixed(1)} / ${(selectedModel.sizeMB / 1000).toFixed(1)} GB`;
+            } else {
+              statSize.textContent = `${downloaded} / ${selectedModel.sizeMB} MB`;
+            }
+          }
+        },
+      });
+
+      // Done
+      clearInterval(timerInterval);
+      clearInterval(tipInterval);
+      setPhase("ready");
+      label.textContent = "Ready!";
+      bar.style.width = "100%";
+      statProgress.textContent = "100%";
+      activeModelId = selectedModel.id;
+
+      await new Promise(r => setTimeout(r, 600));
+
+      // Transition to chat
+      loadScreen.classList.remove("active");
+      loadScreen.style.display = "none";
+      document.getElementById("chatContainer").classList.add("active");
+      document.getElementById("modelLabel").textContent = selectedModel.name;
+      document.getElementById("headerStatus").textContent = selectedModel.name;
+      document.getElementById("changeModelBtn").style.display = "inline-block";
+      document.getElementById("sendBtn").disabled = false;
+      document.getElementById("userInput").focus();
+
+    } catch (err) {
+      clearInterval(timerInterval);
+      clearInterval(tipInterval);
+      label.textContent = `Error: ${err.message}`;
+      bar.style.background = "#e05050";
+      tip.textContent = "";
+      tip.innerHTML = 'Something went wrong. <a href="#" onclick="showModelSelector(); return false;" style="color: var(--accent); text-decoration: underline;">Back to models</a>';
+      console.error(err);
+    }
+  };
+
+  // ── Send Message ──
+  window.sendMessage = async function () {
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text || isGenerating || !engine) return;
+
+    // Add user message
+    appendMessage("user", text);
+    chatHistory.push({ role: "user", content: text });
+    input.value = "";
+    autoResize(input);
+    isGenerating = true;
+    document.getElementById("sendBtn").disabled = true;
+    document.getElementById("tokenInfo").textContent = "Generating…";
+
+    // Create assistant message bubble for streaming
+    const bubble = appendMessage("assistant", "");
+    let fullResponse = "";
+    const startTime = performance.now();
+    let tokenCount = 0;
+
+    try {
+      const reply = await engine.chat.completions.create({
+        messages: chatHistory,
+        temperature: 0.7,
+        max_tokens: 1024,
+        stream: true,
+      });
+
+      for await (const chunk of reply) {
+        const delta = chunk.choices[0]?.delta?.content || "";
+        fullResponse += delta;
+        tokenCount++;
+        bubble.textContent = fullResponse;
+        scrollToBottom();
+      }
+
+      chatHistory.push({ role: "assistant", content: fullResponse });
+
+      const elapsed = (performance.now() - startTime) / 1000;
+      const tps = (tokenCount / elapsed).toFixed(1);
+      document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
+
+    } catch (err) {
+      bubble.textContent = `[Error: ${err.message}]`;
+      console.error(err);
+      document.getElementById("tokenInfo").textContent = "Error";
+    }
+
+    isGenerating = false;
+    document.getElementById("sendBtn").disabled = false;
+    document.getElementById("userInput").focus();
+  };
+
+  // ── Helpers ──
+  function appendMessage(role, text) {
+    const container = document.getElementById("messages");
+    const div = document.createElement("div");
+    div.className = `message ${role}`;
+    div.textContent = text;
+    container.appendChild(div);
+    scrollToBottom();
+    return div;
+  }
+
+  function scrollToBottom() {
+    const m = document.getElementById("messages");
+    m.scrollTop = m.scrollHeight;
+  }
+
+  window.handleKey = function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  window.autoResize = function (el) {
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 150) + "px";
+  };
+
+  // ── Init ──
+  (async () => {
+    const ok = await checkWebGPU();
+    if (ok) await buildModelGrid();
+  })();
+</script>
+
+</body>
+</html>
