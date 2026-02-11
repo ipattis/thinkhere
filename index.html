@@ -195,11 +195,6 @@
     border-style: solid;
     background: var(--user-bg);
     box-shadow: 0 0 16px var(--accent-glow), inset 0 0 16px var(--accent-glow);
-    cursor: default;
-  }
-
-  .model-card.active-model:hover {
-    transform: none;
   }
 
   .model-card.active-model::before { opacity: 1; }
@@ -906,15 +901,14 @@
       }
 
       card.addEventListener("click", () => {
-        // Don't re-select the already active model
-        if (isActive) return;
-
         document.querySelectorAll(".model-card").forEach(c => c.classList.remove("selected"));
         card.classList.add("selected");
         selectedModel = m;
         const btn = document.getElementById("loadBtn");
         btn.disabled = false;
-        if (activeModelId) {
+        if (isActive) {
+          btn.textContent = `Continue with ${m.name}`;
+        } else if (activeModelId) {
           btn.textContent = `Switch to ${m.name}`;
         } else if (isCached) {
           btn.textContent = `Load ${m.name}`;
@@ -992,6 +986,14 @@
   // ── Load Model ──
   window.loadModel = async function () {
     if (!selectedModel) return;
+
+    // If continuing with the already-active model, just return to chat
+    if (selectedModel.id === activeModelId && engine) {
+      document.getElementById("modelSelector").style.display = "none";
+      document.getElementById("chatContainer").classList.add("active");
+      document.getElementById("userInput").focus();
+      return;
+    }
 
     // If switching models, unload the current engine first
     if (engine && activeModelId) {
