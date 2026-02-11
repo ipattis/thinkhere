@@ -110,13 +110,17 @@
     overflow-y: auto;
   }
 
-  .model-selector::-webkit-scrollbar { width: 6px; }
+  .model-selector::-webkit-scrollbar { width: 6px; background: transparent; }
   .model-selector::-webkit-scrollbar-track { background: transparent; }
   .model-selector::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: transparent;
     border-radius: 4px;
+    transition: background 0.2s;
   }
-  .model-selector::-webkit-scrollbar-thumb:hover {
+  .model-selector:hover::-webkit-scrollbar-thumb {
+    background: var(--border);
+  }
+  .model-selector:hover::-webkit-scrollbar-thumb:hover {
     background: var(--text-faint);
   }
 
@@ -507,13 +511,17 @@
     scroll-behavior: smooth;
   }
 
-  .messages::-webkit-scrollbar { width: 6px; }
+  .messages::-webkit-scrollbar { width: 6px; background: transparent; }
   .messages::-webkit-scrollbar-track { background: transparent; }
   .messages::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: transparent;
     border-radius: 4px;
+    transition: background 0.2s;
   }
-  .messages::-webkit-scrollbar-thumb:hover {
+  .messages:hover::-webkit-scrollbar-thumb {
+    background: var(--border);
+  }
+  .messages:hover::-webkit-scrollbar-thumb:hover {
     background: var(--text-faint);
   }
 
