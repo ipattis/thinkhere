@@ -414,6 +414,41 @@
     line-height: 1.5;
   }
 
+  .network-error {
+    background: #2a1a1a;
+    border: 1px solid #5a2a2a;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    max-width: 520px;
+    text-align: left;
+    font-size: 0.82rem;
+    color: #e8a0a0;
+    line-height: 1.6;
+  }
+
+  .network-error strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+
+  .network-error code {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .network-error ul {
+    margin: 8px 0;
+    padding-left: 18px;
+  }
+
+  .network-error li {
+    margin: 4px 0;
+  }
+
   .load-btn {
     font-family: var(--font-mono);
     font-size: 0.85rem;
@@ -712,7 +747,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
         First load downloads model weights to your browser — this is a <strong>one-time download</strong>. After that, the model loads from cache in seconds.
       </div>
-      <div class="notice-detail">Requires a WebGPU-capable browser (Chrome 113+, Edge 113+)</div>
+      <div class="notice-detail">Requires a WebGPU-capable browser (Chrome 113+, Edge 113+) and network access to huggingface.co</div>
     </div>
 
     <button class="load-btn" id="loadBtn" disabled onclick="loadModel()">Select a model</button>
@@ -945,6 +980,10 @@
     document.getElementById("statElapsed").textContent = "0s elapsed";
     document.getElementById("loadingTip").textContent = "Downloading model weights — this only happens once, then it's cached locally.";
 
+    // Remove any appended error blocks
+    const loadScreen2 = document.getElementById("loadingScreen");
+    loadScreen2.querySelectorAll(".network-error").forEach(el => el.remove());
+
     // Reset phase indicators
     const phaseDownload = document.getElementById("phaseDownload");
     const phaseCompile = document.getElementById("phaseCompile");
@@ -1132,11 +1171,40 @@
     } catch (err) {
       clearInterval(timerInterval);
       clearInterval(tipInterval);
-      label.textContent = `Error: ${err.message}`;
       bar.style.background = "#e05050";
-      tip.textContent = "";
-      tip.innerHTML = 'Something went wrong. <a href="#" onclick="showModelSelector(); return false;" style="color: var(--accent); text-decoration: underline;">Back to models</a>';
       console.error(err);
+
+      const msg = (err.message || "").toLowerCase();
+      const isNetworkError = msg.includes("failed to fetch")
+        || msg.includes("cors")
+        || msg.includes("403")
+        || msg.includes("network")
+        || msg.includes("blocked");
+
+      if (isNetworkError) {
+        label.textContent = "Network error — unable to download model";
+        tip.textContent = "";
+        tip.innerHTML = "";
+        // Show detailed network error below the loading screen
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "network-error";
+        errorDiv.innerHTML = `
+          <strong>Blocked by network policy</strong>
+          Model weights are hosted on Hugging Face and could not be reached. This typically happens on corporate or restricted networks that block external domains.
+          <br><br>
+          Ask your IT team to allow access to these domains:
+          <ul>
+            <li><code>huggingface.co</code> — model weights</li>
+            <li><code>esm.run</code> — JavaScript module CDN</li>
+          </ul>
+          <a href="#" onclick="showModelSelector(); return false;" style="color: var(--accent); text-decoration: underline;">Back to models</a>
+        `;
+        document.getElementById("loadingScreen").appendChild(errorDiv);
+      } else {
+        label.textContent = `Error: ${err.message}`;
+        tip.textContent = "";
+        tip.innerHTML = 'Something went wrong. Try refreshing or selecting a smaller model. <a href="#" onclick="showModelSelector(); return false;" style="color: var(--accent); text-decoration: underline;">Back to models</a>';
+      }
     }
   };
 
