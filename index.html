@@ -225,6 +225,39 @@
     border: 1px solid rgba(196, 240, 110, 0.3);
   }
 
+  .tiny-label, .long-load-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    border-radius: 100px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .tiny-label {
+    color: #b0a0d0;
+    background: rgba(176, 160, 208, 0.1);
+    border: 1px solid rgba(176, 160, 208, 0.2);
+  }
+
+  .long-load-label {
+    color: #d0a070;
+    background: rgba(208, 160, 112, 0.1);
+    border: 1px solid rgba(208, 160, 112, 0.2);
+  }
+
+  .model-tech {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-faint);
+    margin-top: 6px;
+    position: relative;
+    letter-spacing: 0.02em;
+  }
+
   .unload-btn {
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -447,6 +480,202 @@
 
   .network-error li {
     margin: 4px 0;
+  }
+
+  /* ── Architecture Section ── */
+  .arch-link {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .arch-link:hover { color: var(--accent); }
+
+  .arch-section {
+    width: 100%;
+    max-width: 580px;
+    margin-top: 8px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .arch-section h3 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .arch-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .arch-columns { grid-template-columns: 1fr; }
+  }
+
+  .arch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .arch-card h4 {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  .arch-card p {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    text-align: left;
+    margin-bottom: 12px;
+  }
+
+  .arch-card p:last-child { margin-bottom: 0; }
+
+  .arch-card .arch-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-faint);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .arch-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+  }
+
+  .arch-card li {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .arch-card li::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    color: var(--text-faint);
+    font-weight: bold;
+  }
+
+  .arch-flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 16px 12px;
+    background: var(--bg);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .arch-flow-step {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  .arch-flow-step .step-sub {
+    display: block;
+    font-size: 0.58rem;
+    color: var(--text-faint);
+    font-weight: 300;
+    margin-top: 2px;
+    letter-spacing: 0.03em;
+  }
+
+  .arch-flow-step.highlight {
+    border-color: var(--accent-dim);
+    background: rgba(196, 240, 110, 0.04);
+    color: var(--accent);
+  }
+
+  .arch-flow-step.highlight .step-sub {
+    color: var(--accent-dim);
+  }
+
+  .arch-flow-step.step-end {
+    background: transparent;
+    border-style: dashed;
+    color: var(--text-faint);
+  }
+
+  .arch-flow-step.step-fork {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .arch-flow-step.step-fork .fork-option {
+    flex: 1;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 6px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .arch-flow-step.step-fork .fork-primary {
+    border-color: var(--accent-dim);
+    color: var(--accent-dim);
+  }
+
+  .arch-flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 0;
+    color: var(--border);
+  }
+
+  .arch-flow-arrow svg {
+    width: 12px;
+    height: 18px;
+  }
+
+  .arch-shared {
+    margin-top: 16px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+    line-height: 1.6;
   }
 
   .load-btn {
@@ -736,7 +965,7 @@
   <!-- Model Selection -->
   <div class="model-selector" id="modelSelector">
     <h2>Run AI <em>entirely</em> in your browser</h2>
-    <p>No servers, no API keys, no data leaves your device. Powered by WebLLM and WebGPU — everything runs locally on your hardware.</p>
+    <p>No servers, no API keys, no data leaves your device. Powered by WebLLM and Transformers.js — everything runs locally on your hardware.</p>
 
     <div id="webgpuCheck"></div>
 
@@ -747,10 +976,65 @@
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
         First load downloads model weights to your browser — this is a <strong>one-time download</strong>. After that, the model loads from cache in seconds.
       </div>
-      <div class="notice-detail">Requires a WebGPU-capable browser (Chrome 113+, Edge 113+) and network access to huggingface.co</div>
+      <div class="notice-detail">WebLLM models require WebGPU (Chrome 113+, Edge 113+). Transformers.js models use ONNX Runtime Web. All need network access to huggingface.co</div>
     </div>
 
+    <a class="arch-link" href="#architecture">How do these models run in your browser? &darr;</a>
+
     <button class="load-btn" id="loadBtn" disabled onclick="loadModel()">Select a model</button>
+
+    <!-- Architecture Explainer -->
+    <div class="arch-section" id="architecture">
+      <h3>Two paths to in-browser AI</h3>
+      <div class="arch-columns">
+        <div class="arch-card">
+          <h4>WebLLM + MLC</h4>
+          <div class="arch-flow">
+            <div class="arch-flow-step">HuggingFace<span class="step-sub">MLC-format weights</span></div>
+            <div class="arch-flow-arrow"><svg viewBox="0 0 12 18"><line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5"/><polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="arch-flow-step highlight">TVM / MLC Compiler<span class="step-sub">Ahead-of-time compilation</span></div>
+            <div class="arch-flow-arrow"><svg viewBox="0 0 12 18"><line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5"/><polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="arch-flow-step">WebGPU Compute Shaders<span class="step-sub">Pre-optimized GPU kernels</span></div>
+            <div class="arch-flow-arrow"><svg viewBox="0 0 12 18"><line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5"/><polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="arch-flow-step step-end">Your GPU</div>
+          </div>
+          <p>Models are compiled ahead-of-time using <strong>Apache TVM / MLC</strong> (Machine Learning Compilation). The compiler transforms model weights and operations into optimized <strong>WebGPU compute shaders</strong> that run directly on your GPU.</p>
+          <div class="arch-label">Trade-offs</div>
+          <ul>
+            <li>Fast inference — kernels are pre-optimized</li>
+            <li>First run compiles shaders for your GPU (cached after)</li>
+            <li>Model must be specifically compiled for MLC</li>
+          </ul>
+          <p class="arch-label">Used by</p>
+          <p>SmolLM2 360M, SmolLM2 1.7B, Llama 3.2 1B, Phi-3.5 Mini</p>
+        </div>
+        <div class="arch-card">
+          <h4>Transformers.js + ONNX Runtime Web</h4>
+          <div class="arch-flow">
+            <div class="arch-flow-step">HuggingFace<span class="step-sub">ONNX-format model graph + weights</span></div>
+            <div class="arch-flow-arrow"><svg viewBox="0 0 12 18"><line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5"/><polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="arch-flow-step highlight">ONNX Runtime Web<span class="step-sub">Builds execution plan at load time</span></div>
+            <div class="arch-flow-arrow"><svg viewBox="0 0 12 18"><line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5"/><polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="arch-flow-step step-fork">
+              <div class="fork-option fork-primary">WebGPU</div>
+              <div class="fork-option">WASM fallback</div>
+            </div>
+            <div class="arch-flow-arrow"><svg viewBox="0 0 12 18"><line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5"/><polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="arch-flow-step step-end">Your GPU / CPU</div>
+          </div>
+          <p>Models are stored in the standard <strong>ONNX</strong> (Open Neural Network Exchange) format. <strong>ONNX Runtime Web</strong> interprets the model graph at load time and executes it on your GPU via WebGPU, or falls back to WebAssembly on unsupported hardware.</p>
+          <div class="arch-label">Trade-offs</div>
+          <ul>
+            <li>Supports any model exportable to ONNX</li>
+            <li>Can fall back to WASM if WebGPU is unavailable</li>
+            <li>Slightly more overhead than pre-compiled kernels</li>
+          </ul>
+          <p class="arch-label">Used by</p>
+          <p>Qwen3 4B Instruct, GPT-OSS 20B</p>
+        </div>
+      </div>
+      <div class="arch-shared">Both methods use WebGPU for GPU acceleration. All model weights are cached in your browser after the first download — no server involved.</div>
+    </div>
   </div>
 
   <!-- Loading Screen -->
@@ -805,6 +1089,7 @@
 
 <script type="module">
   import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+  import { pipeline as createPipeline, TextStreamer } from "https://esm.run/@huggingface/transformers@4.0.0-next.3";
 
   // ── Available models (curated for reasonable browser download) ──
   const MODELS = [
@@ -812,41 +1097,74 @@
       id: "SmolLM2-360M-Instruct-q4f16_1-MLC",
       name: "SmolLM2 360M",
       desc: "Tiny & fast. Good for quick experiments.",
+      tech: "WebLLM · MLC-compiled WebGPU shaders",
       size: "~250 MB",
       sizeMB: 250,
-      time: "~20s – 1 min"
+      time: "~20s – 1 min",
+      backend: "webllm",
+      tiny: true
     },
     {
       id: "SmolLM2-1.7B-Instruct-q4f16_1-MLC",
       name: "SmolLM2 1.7B",
       desc: "Great balance of size and capability.",
+      tech: "WebLLM · MLC-compiled WebGPU shaders",
       size: "~1 GB",
       sizeMB: 1000,
-      time: "~1 – 3 min"
+      time: "~1 – 3 min",
+      backend: "webllm"
     },
     {
       id: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
       name: "Llama 3.2 1B",
       desc: "Meta's compact model. Strong reasoning.",
+      tech: "WebLLM · MLC-compiled WebGPU shaders",
       size: "~700 MB",
       sizeMB: 700,
-      time: "~1 – 2 min"
+      time: "~1 – 2 min",
+      backend: "webllm"
     },
     {
       id: "Phi-3.5-mini-instruct-q4f16_1-MLC",
       name: "Phi-3.5 Mini",
       desc: "Microsoft's capable small model.",
+      tech: "WebLLM · MLC-compiled WebGPU shaders",
       size: "~2.2 GB",
       sizeMB: 2200,
-      time: "~3 – 6 min"
+      time: "~3 – 6 min",
+      backend: "webllm"
+    },
+    {
+      id: "onnx-community/Qwen3-4B-Instruct-2507-ONNX",
+      name: "Qwen3 4B Instruct",
+      desc: "Alibaba's Qwen3 instruction-tuned model. Strong multilingual chat.",
+      tech: "Transformers.js v4 · ONNX Runtime Web · WebGPU · q4f16",
+      size: "~2.9 GB",
+      sizeMB: 2900,
+      time: "~3 – 7 min",
+      backend: "transformers"
+    },
+    {
+      id: "onnx-community/gpt-oss-20b-ONNX",
+      name: "GPT-OSS 20B",
+      desc: "OpenAI's open-source 20B model. Best quality responses.",
+      tech: "Transformers.js v4 · ONNX Runtime Web · WebGPU · q4f16",
+      size: "~12.6 GB",
+      sizeMB: 12600,
+      time: "~10 – 25 min",
+      backend: "transformers",
+      longLoad: true
     },
   ];
 
   let selectedModel = null;
   let activeModelId = null;
-  let engine = null;
+  let activeBackend = null;
+  let engine = null;       // WebLLM engine
+  let tfPipeline = null;   // Transformers.js text-generation pipeline
   let isGenerating = false;
   let chatHistory = [];
+  let hasWebGPU = false;
 
   // ── Check WebGPU Support ──
   async function checkWebGPU() {
@@ -854,9 +1172,8 @@
     if (!navigator.gpu) {
       container.innerHTML = `<div class="webgpu-warning">
         <strong>WebGPU not available.</strong><br>
-        Please use Chrome 113+, Edge 113+, or another WebGPU-enabled browser.
+        WebLLM models require WebGPU (Chrome 113+, Edge 113+). Transformers.js models can still run via ONNX Runtime Web.
       </div>`;
-      document.getElementById("loadBtn").style.display = "none";
       return false;
     }
     try {
@@ -865,9 +1182,8 @@
       return true;
     } catch {
       container.innerHTML = `<div class="webgpu-warning">
-        WebGPU adapter not found. Your GPU may not be supported.
+        WebGPU adapter not found. WebLLM models may not work, but Transformers.js models can still run.
       </div>`;
-      document.getElementById("loadBtn").style.display = "none";
       return false;
     }
   }
@@ -899,11 +1215,16 @@
     MODELS.forEach((m) => {
       const isActive = m.id === activeModelId;
       const isCached = cachedIds.has(m.id);
+      const isDisabled = m.backend === "webllm" && !hasWebGPU;
 
       const card = document.createElement("div");
       card.className = "model-card";
       if (isActive) card.classList.add("active-model");
       else if (isCached) card.classList.add("cached");
+      if (isDisabled) {
+        card.style.opacity = "0.4";
+        card.style.cursor = "not-allowed";
+      }
 
       let badgeHTML = "";
       if (isActive) {
@@ -912,6 +1233,9 @@
         badgeHTML = `<span class="model-badge badge-cached">Cached</span>`;
       }
 
+      const tinyHTML = m.tiny ? `<span class="tiny-label">good for testing</span>` : "";
+      const longLoadHTML = m.longLoad ? `<span class="long-load-label">long download</span>` : "";
+
       let unloadHTML = "";
       if (isActive) {
         unloadHTML = `<button class="unload-btn" data-model-id="${m.id}">Unload Model</button>`;
@@ -919,8 +1243,9 @@
 
       card.innerHTML = `
         ${badgeHTML}
-        <h3>${m.name}</h3>
+        <h3>${m.name}${tinyHTML}${longLoadHTML}</h3>
         <div class="model-desc">${m.desc}</div>
+        <div class="model-tech">${m.tech}</div>
         <div class="model-size">${m.size}</div>
         <div class="model-time">${isCached ? "✓ Cached locally" : "⏱ First download: " + m.time}</div>
         ${unloadHTML}
@@ -936,6 +1261,7 @@
       }
 
       card.addEventListener("click", () => {
+        if (isDisabled) return;
         document.querySelectorAll(".model-card").forEach(c => c.classList.remove("selected"));
         card.classList.add("selected");
         selectedModel = m;
@@ -1009,7 +1335,9 @@
       try { await engine.unload(); } catch (e) { console.error(e); }
       engine = null;
     }
+    tfPipeline = null;
     activeModelId = null;
+    activeBackend = null;
     selectedModel = null;
     chatHistory = [];
 
@@ -1027,7 +1355,7 @@
     if (!selectedModel) return;
 
     // If continuing with the already-active model, just return to chat
-    if (selectedModel.id === activeModelId && engine) {
+    if (selectedModel.id === activeModelId && (engine || tfPipeline)) {
       document.getElementById("modelSelector").style.display = "none";
       document.getElementById("chatContainer").classList.add("active");
       document.getElementById("userInput").focus();
@@ -1038,8 +1366,10 @@
     if (engine && activeModelId) {
       try { await engine.unload(); } catch (e) { console.error(e); }
       engine = null;
-      activeModelId = null;
     }
+    tfPipeline = null;
+    activeModelId = null;
+    activeBackend = null;
 
     // Clear chat for fresh conversation
     chatHistory = [];
@@ -1084,7 +1414,13 @@
     }
 
     // Tips that rotate
-    const tips = [
+    const tips = selectedModel.backend === "transformers" ? [
+      "Downloading ONNX model weights — this only happens once, then it's cached locally.",
+      "All data stays on your device. Nothing is sent to any server.",
+      "ONNX Runtime Web runs inference efficiently in your browser.",
+      "After caching, this model will load in just a few seconds next time.",
+      "Larger models produce better responses but need more memory.",
+    ] : [
       "Downloading model weights — this only happens once, then it's cached locally.",
       "All data stays on your device. Nothing is sent to any server.",
       "Larger models produce better responses but take longer to download.",
@@ -1114,38 +1450,74 @@
     setPhase("download");
 
     try {
-      engine = await webllm.CreateMLCEngine(selectedModel.id, {
-        initProgressCallback: (report) => {
-          const text = report.text || "";
-          label.textContent = text;
-
-          // Detect phase from WebLLM's progress messages
-          if (text.toLowerCase().includes("compil") || text.toLowerCase().includes("shader")) {
-            if (currentPhase !== "compile") {
-              currentPhase = "compile";
-              setPhase("compile");
-              tip.textContent = "Compiling GPU shaders for your hardware — also cached after first run.";
+      if (selectedModel.backend === "transformers") {
+        // ── Transformers.js v4 / ONNX Runtime Web path ──
+        const TOTAL_FILE_SIZE = selectedModel.sizeMB * 1e6; // approximate total bytes
+        const fileProgress = new Map();
+        label.textContent = "Loading ONNX model via Transformers.js…";
+        tfPipeline = await createPipeline("text-generation", selectedModel.id, {
+          dtype: "q4f16",
+          device: "webgpu",
+          progress_callback: (p) => {
+            if (p.status === "progress" && typeof p.loaded === "number") {
+              fileProgress.set(p.file, p.loaded);
+              const loaded = Array.from(fileProgress.values()).reduce((a, b) => a + b, 0);
+              const pct = Math.round((loaded / TOTAL_FILE_SIZE) * 100);
+              bar.style.width = `${pct}%`;
+              statProgress.textContent = `${pct}%`;
+              label.textContent = `Downloading model… ${pct}%`;
+              if (TOTAL_FILE_SIZE >= 1e9) {
+                statSize.textContent = `${(loaded / 1e9).toFixed(1)} / ${(TOTAL_FILE_SIZE / 1e9).toFixed(1)} GB`;
+              } else {
+                statSize.textContent = `${(loaded / 1e6).toFixed(0)} / ${(TOTAL_FILE_SIZE / 1e6).toFixed(0)} MB`;
+              }
+            } else if (p.status === "initiate") {
+              label.textContent = p.file ? `Loading ${p.file}…` : "Initializing…";
+            } else if (p.status === "ready") {
+              if (currentPhase !== "compile") {
+                currentPhase = "compile";
+                setPhase("compile");
+                label.textContent = "Compiling WebGPU shaders…";
+                tip.textContent = "Setting up the ONNX inference session for your GPU.";
+              }
             }
-          }
+          },
+        });
+      } else {
+        // ── WebLLM / WebGPU path ──
+        engine = await webllm.CreateMLCEngine(selectedModel.id, {
+          initProgressCallback: (report) => {
+            const text = report.text || "";
+            label.textContent = text;
 
-          // Update progress bar and percentage
-          if (report.progress !== undefined) {
-            const pct = Math.round(report.progress * 100);
-            bar.style.width = `${pct}%`;
-            statProgress.textContent = `${pct}%`;
-          }
-
-          // Estimate downloaded size
-          if (report.progress !== undefined && selectedModel.sizeMB) {
-            const downloaded = Math.round(report.progress * selectedModel.sizeMB);
-            if (downloaded >= 1000) {
-              statSize.textContent = `${(downloaded / 1000).toFixed(1)} / ${(selectedModel.sizeMB / 1000).toFixed(1)} GB`;
-            } else {
-              statSize.textContent = `${downloaded} / ${selectedModel.sizeMB} MB`;
+            // Detect phase from WebLLM's progress messages
+            if (text.toLowerCase().includes("compil") || text.toLowerCase().includes("shader")) {
+              if (currentPhase !== "compile") {
+                currentPhase = "compile";
+                setPhase("compile");
+                tip.textContent = "Compiling GPU shaders for your hardware — also cached after first run.";
+              }
             }
-          }
-        },
-      });
+
+            // Update progress bar and percentage
+            if (report.progress !== undefined) {
+              const pct = Math.round(report.progress * 100);
+              bar.style.width = `${pct}%`;
+              statProgress.textContent = `${pct}%`;
+            }
+
+            // Estimate downloaded size
+            if (report.progress !== undefined && selectedModel.sizeMB) {
+              const downloaded = Math.round(report.progress * selectedModel.sizeMB);
+              if (downloaded >= 1000) {
+                statSize.textContent = `${(downloaded / 1000).toFixed(1)} / ${(selectedModel.sizeMB / 1000).toFixed(1)} GB`;
+              } else {
+                statSize.textContent = `${downloaded} / ${selectedModel.sizeMB} MB`;
+              }
+            }
+          },
+        });
+      }
 
       // Done
       clearInterval(timerInterval);
@@ -1155,6 +1527,7 @@
       bar.style.width = "100%";
       statProgress.textContent = "100%";
       activeModelId = selectedModel.id;
+      activeBackend = selectedModel.backend;
 
       await new Promise(r => setTimeout(r, 600));
 
@@ -1185,7 +1558,6 @@
         label.textContent = "Network error — unable to download model";
         tip.textContent = "";
         tip.innerHTML = "";
-        // Show detailed network error below the loading screen
         const errorDiv = document.createElement("div");
         errorDiv.className = "network-error";
         errorDiv.innerHTML = `
@@ -1212,7 +1584,7 @@
   window.sendMessage = async function () {
     const input = document.getElementById("userInput");
     const text = input.value.trim();
-    if (!text || isGenerating || !engine) return;
+    if (!text || isGenerating || (!engine && !tfPipeline)) return;
 
     // Add user message
     appendMessage("user", text);
@@ -1230,26 +1602,53 @@
     let tokenCount = 0;
 
     try {
-      const reply = await engine.chat.completions.create({
-        messages: chatHistory,
-        temperature: 0.7,
-        max_tokens: 1024,
-        stream: true,
-      });
+      if (activeBackend === "transformers" && tfPipeline) {
+        // ── Transformers.js streaming generation ──
+        const streamer = new TextStreamer(tfPipeline.tokenizer, {
+          skip_prompt: true,
+          callback_function: (token) => {
+            fullResponse += token;
+            tokenCount++;
+            bubble.textContent = fullResponse;
+            scrollToBottom();
+          },
+        });
 
-      for await (const chunk of reply) {
-        const delta = chunk.choices[0]?.delta?.content || "";
-        fullResponse += delta;
-        tokenCount++;
-        bubble.textContent = fullResponse;
-        scrollToBottom();
+        await tfPipeline(chatHistory, {
+          max_new_tokens: 2048,
+          do_sample: true,
+          streamer,
+        });
+
+        chatHistory.push({ role: "assistant", content: fullResponse });
+
+        const elapsed = (performance.now() - startTime) / 1000;
+        const tps = (tokenCount / elapsed).toFixed(1);
+        document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
+
+      } else {
+        // ── WebLLM streaming generation ──
+        const reply = await engine.chat.completions.create({
+          messages: chatHistory,
+          temperature: 0.7,
+          max_tokens: 1024,
+          stream: true,
+        });
+
+        for await (const chunk of reply) {
+          const delta = chunk.choices[0]?.delta?.content || "";
+          fullResponse += delta;
+          tokenCount++;
+          bubble.textContent = fullResponse;
+          scrollToBottom();
+        }
+
+        chatHistory.push({ role: "assistant", content: fullResponse });
+
+        const elapsed = (performance.now() - startTime) / 1000;
+        const tps = (tokenCount / elapsed).toFixed(1);
+        document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
       }
-
-      chatHistory.push({ role: "assistant", content: fullResponse });
-
-      const elapsed = (performance.now() - startTime) / 1000;
-      const tps = (tokenCount / elapsed).toFixed(1);
-      document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
 
     } catch (err) {
       bubble.textContent = `[Error: ${err.message}]`;
@@ -1290,10 +1689,25 @@
     el.style.height = Math.min(el.scrollHeight, 150) + "px";
   };
 
+  // ── Global scroll forwarding ──
+  // App uses overflow:hidden on the root container, so wheel events outside
+  // the scrollable panel are swallowed. Forward them to whichever panel is active.
+  document.addEventListener('wheel', (e) => {
+    const selector = document.getElementById('modelSelector');
+    if (selector && selector.offsetHeight > 0 && !selector.contains(e.target)) {
+      selector.scrollTop += e.deltaY;
+      return;
+    }
+    const messages = document.getElementById('messages');
+    if (messages && messages.offsetHeight > 0 && !messages.contains(e.target)) {
+      messages.scrollTop += e.deltaY;
+    }
+  }, { passive: true });
+
   // ── Init ──
   (async () => {
-    const ok = await checkWebGPU();
-    if (ok) await buildModelGrid();
+    hasWebGPU = await checkWebGPU();
+    await buildModelGrid();
   })();
 </script>
 
