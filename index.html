@@ -262,7 +262,7 @@
     border: 1px solid rgba(196, 240, 110, 0.3);
   }
 
-  .tiny-label, .long-load-label {
+  .tiny-label, .long-load-label, .goldilocks-label {
     font-family: var(--font-mono);
     font-size: 0.55rem;
     border-radius: 100px;
@@ -284,6 +284,12 @@
     color: #d0a070;
     background: rgba(208, 160, 112, 0.1);
     border: 1px solid rgba(208, 160, 112, 0.2);
+  }
+
+  .goldilocks-label {
+    color: var(--accent);
+    background: rgba(196, 240, 110, 0.1);
+    border: 1px solid rgba(196, 240, 110, 0.2);
   }
 
   .model-tech {
@@ -1006,7 +1012,7 @@
     background: var(--surface);
     animation: fadeIn 0.2s ease;
     flex-shrink: 0;
-    max-height: 320px;
+    max-height: 400px;
     overflow-y: auto;
   }
 
@@ -1014,8 +1020,12 @@
 
   .settings-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .settings-grid { grid-template-columns: 1fr 1fr; }
   }
 
   @media (max-width: 600px) {
@@ -1103,6 +1113,272 @@
     max-height: 120px;
     resize: vertical;
     line-height: 1.4;
+  }
+
+  /* ── Knowledge Base ── */
+  .kb-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .kb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .kb-toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .kb-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .kb-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .kb-toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .kb-toggle input:checked + .kb-toggle-slider {
+    background: var(--accent-dim);
+  }
+
+  .kb-toggle input:checked + .kb-toggle-slider::before {
+    transform: translateX(16px);
+    background: var(--accent);
+  }
+
+  .kb-model-status {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kb-model-status .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    flex-shrink: 0;
+  }
+
+  .kb-model-status .status-dot.loaded {
+    background: var(--accent);
+  }
+
+  .kb-model-status .status-dot.loading {
+    background: #d0a070;
+    animation: pulse 1s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .kb-load-btn {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--accent-dim);
+    border-radius: 6px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .kb-load-btn:hover {
+    background: var(--accent-glow);
+  }
+
+  .kb-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .kb-upload-btn, .kb-clear-btn {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .kb-upload-btn {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .kb-upload-btn:hover {
+    background: rgba(196, 240, 110, 0.15);
+    border-color: var(--accent);
+  }
+
+  .kb-clear-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-faint);
+  }
+
+  .kb-clear-btn:hover {
+    border-color: #e05050;
+    color: #e05050;
+  }
+
+  .kb-docs {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  .kb-docs::-webkit-scrollbar { width: 4px; }
+  .kb-docs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .kb-doc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+
+  .kb-doc-item .doc-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text);
+  }
+
+  .kb-doc-item .doc-meta {
+    color: var(--text-faint);
+    font-size: 0.6rem;
+    white-space: nowrap;
+  }
+
+  .kb-doc-item .doc-remove {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    padding: 0 2px;
+    font-size: 0.8rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+  }
+
+  .kb-doc-item .doc-remove:hover {
+    color: #e05050;
+  }
+
+  .kb-empty {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    text-align: center;
+    padding: 8px;
+  }
+
+  .kb-loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(12, 12, 14, 0.92);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .kb-loading-overlay.active {
+    display: flex;
+  }
+
+  .kb-loading-overlay .kb-loading-title {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .kb-loading-overlay .kb-loading-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-align: center;
+    max-width: 400px;
+  }
+
+  .kb-loading-overlay .kb-loading-bar {
+    width: 240px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .kb-loading-overlay .kb-loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  .kb-loading-overlay .kb-loading-text {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+  }
+
+  .kb-rag-indicator {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--accent-dim);
+    padding: 4px 10px;
+    background: var(--accent-glow);
+    border-radius: 6px;
+    margin-bottom: 4px;
   }
 
   /* ── Stop Button ── */
@@ -1568,12 +1844,13 @@
           <h4>System Prompt</h4>
           <select class="preset-select" id="presetSelect" onchange="applyPreset(this.value)">
             <option value="">None (default)</option>
+            <option value="custom" disabled hidden>Custom</option>
             <option value="coding">Coding Assistant</option>
             <option value="writing">Writing Editor</option>
             <option value="translator">Translator</option>
             <option value="concise">Concise Answers</option>
           </select>
-          <textarea class="system-prompt-input" id="systemPromptInput" placeholder="Enter a system prompt to set the assistant's behavior…" rows="3"></textarea>
+          <textarea class="system-prompt-input" id="systemPromptInput" placeholder="Enter a system prompt to set the assistant's behavior…" rows="3" oninput="onSystemPromptInput()"></textarea>
         </div>
         <div class="settings-section">
           <h4>Generation</h4>
@@ -1588,6 +1865,28 @@
           <div class="settings-field">
             <label>Max Tokens <span class="val" id="maxTokVal">1024</span></label>
             <input type="range" id="maxTokSlider" min="64" max="4096" step="64" value="1024" oninput="document.getElementById('maxTokVal').textContent = this.value">
+          </div>
+        </div>
+        <div class="settings-section kb-section">
+          <div class="kb-header">
+            <h4>Knowledge Base</h4>
+            <label class="kb-toggle" title="Enable RAG retrieval">
+              <input type="checkbox" id="kbToggle" onchange="toggleRAG(this.checked)">
+              <span class="kb-toggle-slider"></span>
+            </label>
+          </div>
+          <div class="kb-model-status" id="kbModelStatus">
+            <span class="status-dot" id="kbStatusDot"></span>
+            <span id="kbStatusText">Embedding model not loaded</span>
+            <button class="kb-load-btn" id="kbLoadBtn" onclick="loadEmbeddingModel()" style="display:none">Load</button>
+          </div>
+          <div class="kb-actions">
+            <button class="kb-upload-btn" onclick="document.getElementById('kbFileInput').click()">+ Add Document</button>
+            <button class="kb-clear-btn" id="kbClearBtn" onclick="clearKnowledgeBase()" style="display:none">Clear All</button>
+          </div>
+          <input type="file" id="kbFileInput" style="display:none" accept=".txt,.md,.json,.csv,.xml,.yaml,.yml,.html,.css,.js,.ts,.py" onchange="handleKBUpload(this)">
+          <div class="kb-docs" id="kbDocs">
+            <div class="kb-empty">No documents added</div>
           </div>
         </div>
       </div>
@@ -1725,7 +2024,9 @@
       size: "~2.9 GB",
       sizeMB: 2900,
       time: "~3 – 7 min",
-      backend: "transformers"
+      backend: "transformers",
+      supportsSystemPrompt: true,
+      goldilocks: true
     },
     {
       id: "onnx-community/gpt-oss-20b-ONNX",
@@ -1736,7 +2037,8 @@
       sizeMB: 12600,
       time: "~10 – 25 min",
       backend: "transformers",
-      longLoad: true
+      longLoad: true,
+      supportsSystemPrompt: true
     },
   ];
 
@@ -1745,8 +2047,16 @@
   let activeBackend = null;
   let engine = null;       // WebLLM engine
   let tfPipeline = null;   // Transformers.js text-generation pipeline
+  let embeddingPipeline = null; // Transformers.js embedding pipeline for KB
+  let ragEnabled = localStorage.getItem("kb_ragEnabled") === "true";
+  let kbDocuments = new Map(); // in-memory metadata cache
   let isGenerating = false;
   let shouldStop = false;
+
+  const EMBEDDING_MODEL = {
+    id: "onnx-community/Qwen3-Embedding-0.6B-ONNX",
+    task: "feature-extraction",
+  };
   let chatHistory = [];
   let hasWebGPU = false;
   let currentConvId = null;
@@ -1763,9 +2073,50 @@
   };
 
   window.applyPreset = function (key) {
+    if (key === "custom") return; // "Custom" is display-only
     const input = document.getElementById("systemPromptInput");
     input.value = PRESETS[key] || "";
+    onSystemPromptInput();
   };
+
+  window.onSystemPromptInput = function () {
+    const input = document.getElementById("systemPromptInput");
+    const select = document.getElementById("presetSelect");
+    const customText = input.value.trim();
+
+    if (!customText) {
+      select.value = "";
+      return;
+    }
+
+    // Check if the text matches a preset
+    const matchedKey = Object.entries(PRESETS).find(([, v]) => v === customText)?.[0];
+    select.value = matchedKey || "custom";
+  };
+
+  function updateSystemPromptAvailability() {
+    const model = MODELS.find(m => m.id === activeModelId);
+    const supported = model?.supportsSystemPrompt === true;
+    const input = document.getElementById("systemPromptInput");
+    const select = document.getElementById("presetSelect");
+    const section = input.closest(".settings-section");
+
+    input.disabled = !supported;
+    select.disabled = !supported;
+
+    if (!supported) {
+      input.placeholder = "System prompts are not supported by this model";
+      input.value = "";
+      select.value = "";
+      section.style.opacity = "0.4";
+      section.title = "This model does not reliably follow system prompts";
+    } else {
+      input.placeholder = "Enter a system prompt to set the assistant's behavior…";
+      section.style.opacity = "";
+      section.title = "";
+      onSystemPromptInput();
+    }
+  }
 
   // ── Settings Panel ──
   window.toggleSettings = function () {
@@ -1790,8 +2141,10 @@
 
   // ── IndexedDB Persistence ──
   const DB_NAME = "localmind";
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
   const STORE_NAME = "conversations";
+  const KB_STORE_NAME = "kb_chunks";
+  const KB_META_STORE_NAME = "kb_metadata";
 
   function openDB() {
     return new Promise((resolve, reject) => {
@@ -1800,6 +2153,13 @@
         const db = e.target.result;
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, { keyPath: "id" });
+        }
+        if (!db.objectStoreNames.contains(KB_STORE_NAME)) {
+          const chunkStore = db.createObjectStore(KB_STORE_NAME, { keyPath: "id", autoIncrement: true });
+          chunkStore.createIndex("docId", "docId", { unique: false });
+        }
+        if (!db.objectStoreNames.contains(KB_META_STORE_NAME)) {
+          db.createObjectStore(KB_META_STORE_NAME, { keyPath: "docId" });
         }
       };
       req.onsuccess = () => resolve(req.result);
@@ -1861,6 +2221,400 @@
     } catch { return null; }
   }
 
+  // ── Knowledge Base: Embedding Model ──
+  function showKBLoadingOverlay(title, subtitle) {
+    const overlay = document.getElementById("kbLoadingOverlay");
+    document.getElementById("kbLoadingTitle").textContent = title;
+    document.getElementById("kbLoadingSubtitle").textContent = subtitle;
+    document.getElementById("kbLoadingBarFill").style.width = "0%";
+    document.getElementById("kbLoadingText").textContent = "0%";
+    overlay.classList.add("active");
+  }
+
+  function hideKBLoadingOverlay() {
+    document.getElementById("kbLoadingOverlay").classList.remove("active");
+  }
+
+  function updateKBLoadingProgress(pct, text) {
+    document.getElementById("kbLoadingBarFill").style.width = `${pct}%`;
+    document.getElementById("kbLoadingText").textContent = text || `${pct}%`;
+  }
+
+  function updateKBModelStatus(state) {
+    const dot = document.getElementById("kbStatusDot");
+    const text = document.getElementById("kbStatusText");
+    const btn = document.getElementById("kbLoadBtn");
+    dot.className = "status-dot";
+    if (state === "loaded") {
+      dot.classList.add("loaded");
+      text.textContent = "Embedding model ready";
+      btn.style.display = "none";
+    } else if (state === "loading") {
+      dot.classList.add("loading");
+      text.textContent = "Loading…";
+      btn.style.display = "none";
+    } else {
+      text.textContent = "Embedding model not loaded";
+      btn.style.display = kbDocuments.size > 0 ? "inline-block" : "none";
+    }
+  }
+
+  window.loadEmbeddingModel = async function () {
+    if (embeddingPipeline) return;
+    updateKBModelStatus("loading");
+    showKBLoadingOverlay("Loading Embedding Model", "Downloading model weights — this only happens once, then it's cached locally.");
+    try {
+      const totalSize = 600 * 1e6; // ~600MB approximate
+      const fileProgress = new Map();
+      embeddingPipeline = await createPipeline(EMBEDDING_MODEL.task, EMBEDDING_MODEL.id, {
+        dtype: "q4",
+        device: "webgpu",
+        progress_callback: (p) => {
+          if (p.status === "progress" && typeof p.loaded === "number") {
+            fileProgress.set(p.file, p.loaded);
+            const loaded = Array.from(fileProgress.values()).reduce((a, b) => a + b, 0);
+            const pct = Math.min(99, Math.round((loaded / totalSize) * 100));
+            updateKBLoadingProgress(pct, `${pct}% — ${(loaded / 1e6).toFixed(0)} / ${(totalSize / 1e6).toFixed(0)} MB`);
+          } else if (p.status === "ready") {
+            updateKBLoadingProgress(100, "Initializing…");
+          }
+        },
+      });
+      updateKBModelStatus("loaded");
+      hideKBLoadingOverlay();
+    } catch (err) {
+      console.error("Failed to load embedding model:", err);
+      updateKBModelStatus("unloaded");
+      hideKBLoadingOverlay();
+      alert("Failed to load embedding model: " + err.message);
+    }
+  };
+
+  async function embedText(text) {
+    if (!embeddingPipeline) throw new Error("Embedding model not loaded");
+    const output = await embeddingPipeline(text, { pooling: "mean", normalize: true });
+    return new Float32Array(output.data);
+  }
+
+  // ── Knowledge Base: Document Chunking ──
+  function chunkDocument(text) {
+    const TARGET_CHARS = 2048; // ~512 tokens
+    const OVERLAP_CHARS = 600; // ~150 tokens
+    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim());
+    const chunks = [];
+    let buffer = "";
+
+    for (const para of paragraphs) {
+      const trimmed = para.trim();
+      if (!trimmed) continue;
+
+      if (buffer.length + trimmed.length + 2 > TARGET_CHARS && buffer.length > 0) {
+        chunks.push(buffer.trim());
+        const overlap = getOverlapText(buffer, OVERLAP_CHARS);
+        buffer = overlap + "\n\n" + trimmed;
+      } else {
+        buffer += (buffer ? "\n\n" : "") + trimmed;
+      }
+    }
+
+    if (buffer.trim()) {
+      chunks.push(buffer.trim());
+    }
+
+    // Split any oversized chunks
+    const finalChunks = [];
+    for (const chunk of chunks) {
+      if (chunk.length > TARGET_CHARS * 1.5) {
+        finalChunks.push(...splitLargeSegment(chunk, TARGET_CHARS));
+      } else {
+        finalChunks.push(chunk);
+      }
+    }
+
+    return finalChunks.length > 0 ? finalChunks : [text.trim()];
+  }
+
+  function splitLargeSegment(text, targetChars) {
+    const sentences = text.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) || [text];
+    const parts = [];
+    let current = "";
+    for (const sentence of sentences) {
+      if (current.length + sentence.length > targetChars && current.length > 0) {
+        parts.push(current.trim());
+        current = sentence;
+      } else {
+        current += sentence;
+      }
+    }
+    if (current.trim()) parts.push(current.trim());
+    return parts;
+  }
+
+  function getOverlapText(text, overlapChars) {
+    if (text.length <= overlapChars) return text;
+    return text.slice(-overlapChars);
+  }
+
+  // ── Knowledge Base: Keyword Extraction ──
+  const STOPWORDS = new Set([
+    "a","an","the","and","or","but","in","on","at","to","for","of","with","by",
+    "from","is","it","this","that","are","was","were","be","been","being","have",
+    "has","had","do","does","did","will","would","could","should","may","might",
+    "shall","can","not","no","nor","so","if","then","than","too","very","just",
+    "about","above","after","again","all","also","am","any","because","before",
+    "between","both","each","few","get","got","he","her","here","him","his","how",
+    "i","its","let","me","more","most","my","new","now","of","off","old","once",
+    "only","other","our","out","over","own","same","she","some","such","them",
+    "there","these","they","those","through","under","up","us","we","what","when",
+    "where","which","while","who","whom","why","you","your",
+  ]);
+
+  function extractKeywords(text, topK = 20) {
+    const words = text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(w => w.length > 2 && !STOPWORDS.has(w));
+    const freq = {};
+    for (const w of words) freq[w] = (freq[w] || 0) + 1;
+    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+    const keywords = sorted.slice(0, topK).map(([word]) => word);
+    return { keywords, freq };
+  }
+
+  // ── Knowledge Base: Document Upload & Storage ──
+  window.handleKBUpload = async function (input) {
+    const file = input.files[0];
+    if (!file) return;
+    input.value = "";
+
+    const text = await file.text();
+    if (!text.trim()) { alert("File is empty."); return; }
+
+    if (!embeddingPipeline) {
+      await loadEmbeddingModel();
+      if (!embeddingPipeline) return; // loading failed
+    }
+
+    await processAndStoreDocument(file.name, text, file.size);
+  };
+
+  async function processAndStoreDocument(fileName, text, fileSize) {
+    const docId = Date.now().toString() + "_" + Math.random().toString(36).slice(2, 8);
+    const chunks = chunkDocument(text);
+
+    showKBLoadingOverlay("Processing Document", `Embedding ${chunks.length} chunks from "${fileName}"…`);
+
+    const db = await openDB();
+    const BATCH_SIZE = 5;
+
+    for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
+      const batch = chunks.slice(i, i + BATCH_SIZE);
+      const embeddings = await Promise.all(batch.map(c => embedText(c)));
+
+      const tx = db.transaction(KB_STORE_NAME, "readwrite");
+      const store = tx.objectStore(KB_STORE_NAME);
+
+      for (let j = 0; j < batch.length; j++) {
+        const { keywords, freq } = extractKeywords(batch[j]);
+        store.put({
+          docId,
+          chunkIndex: i + j,
+          text: batch[j],
+          embedding: Array.from(embeddings[j]),
+          keywords,
+          wordFreq: freq,
+        });
+      }
+
+      const pct = Math.round(((i + batch.length) / chunks.length) * 100);
+      updateKBLoadingProgress(pct, `${i + batch.length} / ${chunks.length} chunks`);
+    }
+
+    // Store metadata
+    const meta = {
+      docId,
+      fileName,
+      fileSize,
+      chunkCount: chunks.length,
+      addedAt: new Date().toISOString(),
+    };
+
+    const metaTx = db.transaction(KB_META_STORE_NAME, "readwrite");
+    metaTx.objectStore(KB_META_STORE_NAME).put(meta);
+
+    kbDocuments.set(docId, meta);
+    hideKBLoadingOverlay();
+    refreshKBDocList();
+
+    // Auto-enable RAG
+    if (!ragEnabled) {
+      ragEnabled = true;
+      localStorage.setItem("kb_ragEnabled", "true");
+      document.getElementById("kbToggle").checked = true;
+    }
+  }
+
+  // ── Knowledge Base: Document List Management ──
+  async function refreshKBDocList() {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(KB_META_STORE_NAME, "readonly");
+      const req = tx.objectStore(KB_META_STORE_NAME).getAll();
+      const docs = await new Promise((resolve) => {
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      });
+
+      kbDocuments.clear();
+      docs.forEach(d => kbDocuments.set(d.docId, d));
+
+      const container = document.getElementById("kbDocs");
+      const clearBtn = document.getElementById("kbClearBtn");
+
+      if (docs.length === 0) {
+        container.innerHTML = '<div class="kb-empty">No documents added</div>';
+        clearBtn.style.display = "none";
+      } else {
+        container.innerHTML = docs.map(d => {
+          const size = d.fileSize >= 1024 * 1024
+            ? (d.fileSize / (1024 * 1024)).toFixed(1) + " MB"
+            : (d.fileSize / 1024).toFixed(1) + " KB";
+          return `<div class="kb-doc-item">
+            <span class="doc-name" title="${d.fileName}">${d.fileName}</span>
+            <span class="doc-meta">${d.chunkCount} chunks · ${size}</span>
+            <button class="doc-remove" onclick="removeKBDocument('${d.docId}')" title="Remove">×</button>
+          </div>`;
+        }).join("");
+        clearBtn.style.display = "inline-block";
+      }
+
+      updateKBModelStatus(embeddingPipeline ? "loaded" : "unloaded");
+    } catch (e) {
+      console.error("Failed to refresh KB doc list:", e);
+    }
+  }
+
+  window.removeKBDocument = async function (docId) {
+    try {
+      const db = await openDB();
+
+      // Delete all chunks for this doc
+      const tx = db.transaction(KB_STORE_NAME, "readwrite");
+      const store = tx.objectStore(KB_STORE_NAME);
+      const index = store.index("docId");
+      const req = index.openCursor(IDBKeyRange.only(docId));
+      await new Promise((resolve, reject) => {
+        req.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            cursor.delete();
+            cursor.continue();
+          } else {
+            resolve();
+          }
+        };
+        req.onerror = () => reject(req.error);
+      });
+
+      // Delete metadata
+      const metaTx = db.transaction(KB_META_STORE_NAME, "readwrite");
+      metaTx.objectStore(KB_META_STORE_NAME).delete(docId);
+
+      kbDocuments.delete(docId);
+      refreshKBDocList();
+    } catch (e) {
+      console.error("Failed to remove KB document:", e);
+    }
+  };
+
+  window.clearKnowledgeBase = async function () {
+    if (!confirm("Remove all documents from the knowledge base?")) return;
+    try {
+      const db = await openDB();
+      const tx1 = db.transaction(KB_STORE_NAME, "readwrite");
+      tx1.objectStore(KB_STORE_NAME).clear();
+      const tx2 = db.transaction(KB_META_STORE_NAME, "readwrite");
+      tx2.objectStore(KB_META_STORE_NAME).clear();
+      kbDocuments.clear();
+      ragEnabled = false;
+      localStorage.setItem("kb_ragEnabled", "false");
+      document.getElementById("kbToggle").checked = false;
+      refreshKBDocList();
+    } catch (e) {
+      console.error("Failed to clear KB:", e);
+    }
+  };
+
+  // ── Knowledge Base: Hybrid Retrieval ──
+  function cosineSimilarity(vecA, vecB) {
+    let dot = 0, normA = 0, normB = 0;
+    for (let i = 0; i < vecA.length; i++) {
+      dot += vecA[i] * vecB[i];
+      normA += vecA[i] * vecA[i];
+      normB += vecB[i] * vecB[i];
+    }
+    const denom = Math.sqrt(normA) * Math.sqrt(normB);
+    return denom === 0 ? 0 : dot / denom;
+  }
+
+  function calculateKeywordScore(queryKeywords, chunkKeywords, chunkWordFreq) {
+    const qSet = new Set(queryKeywords);
+    const cSet = new Set(chunkKeywords);
+    const intersection = [...qSet].filter(w => cSet.has(w));
+    const union = new Set([...qSet, ...cSet]);
+    if (union.size === 0) return 0;
+
+    // Jaccard similarity
+    const jaccard = intersection.length / union.size;
+
+    // BM25-like frequency boost
+    let freqBoost = 0;
+    for (const word of intersection) {
+      const tf = chunkWordFreq[word] || 1;
+      freqBoost += Math.log(1 + tf);
+    }
+    const maxBoost = Math.max(1, intersection.length * Math.log(1 + 5));
+
+    return 0.6 * jaccard + 0.4 * (freqBoost / maxBoost);
+  }
+
+  async function retrieveRelevantChunks(query, topK = 5) {
+    if (!embeddingPipeline || kbDocuments.size === 0) return [];
+
+    const queryVec = await embedText(query);
+    const { keywords: queryKeywords } = extractKeywords(query);
+
+    const db = await openDB();
+    const tx = db.transaction(KB_STORE_NAME, "readonly");
+    const allChunks = await new Promise((resolve) => {
+      const req = tx.objectStore(KB_STORE_NAME).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+
+    const scored = allChunks.map(chunk => {
+      const chunkVec = new Float32Array(chunk.embedding);
+      const semanticScore = cosineSimilarity(queryVec, chunkVec);
+      const keywordScore = calculateKeywordScore(queryKeywords, chunk.keywords || [], chunk.wordFreq || {});
+      const score = 0.7 * semanticScore + 0.3 * keywordScore;
+      return { ...chunk, score, semanticScore, keywordScore };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, topK);
+  }
+
+  // ── Knowledge Base: Toggle ──
+  window.toggleRAG = async function (enabled) {
+    ragEnabled = enabled;
+    localStorage.setItem("kb_ragEnabled", String(ragEnabled));
+    if (enabled && !embeddingPipeline && kbDocuments.size > 0) {
+      await loadEmbeddingModel();
+      if (!embeddingPipeline) {
+        ragEnabled = false;
+        localStorage.setItem("kb_ragEnabled", "false");
+        document.getElementById("kbToggle").checked = false;
+      }
+    }
+  };
+
   window.showConversations = async function () {
     const list = document.getElementById("convList");
     const convs = await loadConversationList();
@@ -1901,7 +2655,7 @@
     currentConvId = conv.id;
     if (conv.systemPrompt) {
       document.getElementById("systemPromptInput").value = conv.systemPrompt;
-      document.getElementById("presetSelect").value = "";
+      onSystemPromptInput();
     }
     // Re-render messages
     const container = document.getElementById("messages");
@@ -2113,6 +2867,7 @@
 
       const tinyHTML = m.tiny ? `<span class="tiny-label">good for testing</span>` : "";
       const longLoadHTML = m.longLoad ? `<span class="long-load-label">long download</span>` : "";
+      const goldilocksHTML = m.goldilocks ? `<span class="goldilocks-label">goldilocks</span>` : "";
 
       let unloadHTML = "";
       if (isActive) {
@@ -2121,7 +2876,7 @@
 
       card.innerHTML = `
         ${badgeHTML}
-        <h3>${m.name}${tinyHTML}${longLoadHTML}</h3>
+        <h3>${m.name}${tinyHTML}${longLoadHTML}${goldilocksHTML}</h3>
         <div class="model-desc">${m.desc}</div>
         <div class="model-tech">${m.tech}</div>
         <div class="model-size">${m.size}</div>
@@ -2237,6 +2992,7 @@
       document.getElementById("modelSelector").style.display = "none";
       document.getElementById("chatContainer").classList.add("active");
       document.getElementById("userInput").focus();
+      updateSystemPromptAvailability();
       return;
     }
 
@@ -2420,6 +3176,7 @@
       document.getElementById("userInput").focus();
       currentConvId = null;
       updateTokenCount();
+      updateSystemPromptAvailability();
 
     } catch (err) {
       clearInterval(timerInterval);
@@ -2476,11 +3233,58 @@
     showStopButton();
     document.getElementById("tokenInfo").textContent = "Generating…";
 
-    // Build messages array with system prompt
+    // Build messages array
     const sysPrompt = getSystemPrompt();
     const messages = [];
     if (sysPrompt) messages.push({ role: "system", content: sysPrompt });
     messages.push(...chatHistory);
+
+    // RAG: retrieve relevant chunks and prepend to the last user message
+    // Injected into the user turn (not system prompt) so small models reliably attend to it
+    const RAG_MAX_CHARS = 3000;
+    const RAG_MIN_SCORE = 0.15;
+    if (ragEnabled && kbDocuments.size > 0) {
+      try {
+        if (!embeddingPipeline) await loadEmbeddingModel();
+        if (!embeddingPipeline) throw new Error("Embedding model unavailable");
+        const relevantChunks = await retrieveRelevantChunks(text);
+        const usable = relevantChunks.filter(c => c.score >= RAG_MIN_SCORE);
+        if (usable.length > 0) {
+          const contextParts = [];
+          let totalChars = 0;
+          for (let i = 0; i < usable.length; i++) {
+            let chunkText = usable[i].text;
+            const header = `[Source ${i + 1}]:\n`;
+            if (totalChars + header.length + chunkText.length > RAG_MAX_CHARS) {
+              const remaining = RAG_MAX_CHARS - totalChars - header.length;
+              if (remaining > 200) {
+                chunkText = chunkText.slice(0, remaining) + "…";
+              } else {
+                break;
+              }
+            }
+            contextParts.push(header + chunkText);
+            totalChars += header.length + chunkText.length;
+          }
+
+          // Rewrite the last user message in the messages array (chatHistory stays clean)
+          const lastIdx = messages.length - 1;
+          const originalQuestion = messages[lastIdx].content;
+          messages[lastIdx] = {
+            role: "user",
+            content: `Use the following context to answer the question.\n\n${contextParts.join("\n\n")}\n\nQuestion: ${originalQuestion}`,
+          };
+
+          const indicator = document.createElement("div");
+          indicator.className = "kb-rag-indicator";
+          indicator.textContent = `Retrieved ${contextParts.length} relevant chunk${contextParts.length === 1 ? "" : "s"} from knowledge base`;
+          document.getElementById("messages").appendChild(indicator);
+          scrollToBottom();
+        }
+      } catch (e) {
+        console.error("RAG retrieval failed:", e);
+      }
+    }
 
     const params = getGenParams();
 
@@ -2628,8 +3432,20 @@
     setupFileDrop();
     // Pre-initialize IndexedDB
     try { await openDB(); } catch (e) { console.error("IndexedDB init failed:", e); }
+    // Restore knowledge base state
+    try {
+      await refreshKBDocList();
+      document.getElementById("kbToggle").checked = ragEnabled;
+    } catch (e) { console.error("KB init failed:", e); }
   })();
 </script>
+
+<div class="kb-loading-overlay" id="kbLoadingOverlay">
+  <div class="kb-loading-title" id="kbLoadingTitle">Loading Embedding Model</div>
+  <div class="kb-loading-subtitle" id="kbLoadingSubtitle">Downloading model weights — this only happens once.</div>
+  <div class="kb-loading-bar"><div class="kb-loading-bar-fill" id="kbLoadingBarFill"></div></div>
+  <div class="kb-loading-text" id="kbLoadingText">0%</div>
+</div>
 
 </body>
 </html>

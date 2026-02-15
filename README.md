@@ -21,13 +21,16 @@ Two runtime architectures are supported:
 | SmolLM2 1.7B | ~1 GB | WebLLM | Great balance of size and capability |
 | Llama 3.2 1B | ~700 MB | WebLLM | Meta's compact model with strong reasoning |
 | Phi-3.5 Mini | ~2.2 GB | WebLLM | Microsoft's capable small model |
-| Qwen3 4B Instruct | ~2.9 GB | Transformers.js | Alibaba's instruction-tuned model, strong multilingual chat |
+| Qwen3 4B Instruct | ~2.9 GB | Transformers.js | Alibaba's instruction-tuned model, strong multilingual chat — **Goldilocks pick** |
 | GPT-OSS 20B | ~12.6 GB | Transformers.js | OpenAI's open-source 20B model, best quality responses |
 
 ## Features
 
+### Knowledge base (RAG)
+Upload documents (.txt, .md, .json, .csv, and more) to build a local knowledge base. Documents are chunked, embedded using a dedicated embedding model ([Qwen3-Embedding-0.6B](https://huggingface.co/onnx-community/Qwen3-Embedding-0.6B-ONNX)), and stored in IndexedDB — everything stays in your browser. When RAG is enabled, each query triggers a hybrid search (70% semantic similarity + 30% keyword overlap) and the most relevant chunks are injected into the prompt. Toggle RAG on/off from the Knowledge Base section in settings. Documents persist across page reloads; the embedding model is cached after the first download.
+
 ### System prompts
-Choose from built-in presets (Coding Assistant, Writing Editor, Translator, Concise Mode) or write a custom system prompt. Collapsed by default in the settings panel above the chat.
+Choose from built-in presets (Coding Assistant, Writing Editor, Translator, Concise Mode) or write a custom system prompt. Collapsed by default in the settings panel above the chat. Typing a custom prompt switches the dropdown to "Custom" automatically. System prompts are only available on models with strong instruction adherence (Qwen3 4B, GPT-OSS 20B) — the section is disabled for smaller models that don't reliably follow them.
 
 ### Generation controls
 Adjust temperature, top-p, and max tokens via sliders in the settings panel. Defaults are sensible but tunable per conversation.
