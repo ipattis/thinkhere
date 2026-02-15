@@ -921,11 +921,462 @@
   .input-meta {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-top: 8px;
     font-family: var(--font-mono);
     font-size: 0.65rem;
     color: var(--text-faint);
     letter-spacing: 0.04em;
+  }
+
+  .input-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .input-meta-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* ── Chat Toolbar Buttons ── */
+  .toolbar-btn {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-faint);
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 3px 8px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .toolbar-btn:hover {
+    color: var(--text-dim);
+    border-color: var(--border);
+    background: var(--surface);
+  }
+
+  .toolbar-btn.active {
+    color: var(--accent);
+    border-color: var(--accent-dim);
+    background: rgba(196, 240, 110, 0.04);
+  }
+
+  .toolbar-btn svg { width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }
+
+  /* ── Settings Panel ── */
+  .settings-panel {
+    display: none;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    background: var(--surface);
+    animation: fadeIn 0.2s ease;
+    flex-shrink: 0;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .settings-panel.active { display: block; }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .settings-grid { grid-template-columns: 1fr; }
+  }
+
+  .settings-section h4 {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .settings-field {
+    margin-bottom: 10px;
+  }
+
+  .settings-field label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-faint);
+    margin-bottom: 5px;
+    letter-spacing: 0.02em;
+  }
+
+  .settings-field label .val {
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .settings-field input[type="range"] {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border);
+    border-radius: 4px;
+    outline: none;
+  }
+
+  .settings-field input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .preset-select, .system-prompt-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .preset-select:focus, .system-prompt-input:focus {
+    border-color: var(--accent-dim);
+  }
+
+  .preset-select {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-size: 0.78rem;
+  }
+
+  .preset-select option {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .system-prompt-input {
+    padding: 10px 12px;
+    min-height: 64px;
+    max-height: 120px;
+    resize: vertical;
+    line-height: 1.4;
+  }
+
+  /* ── Stop Button ── */
+  .stop-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #e05050;
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .stop-btn.active { display: flex; }
+  .stop-btn:hover { transform: scale(1.06); filter: brightness(1.1); }
+
+  .stop-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+  }
+
+  /* ── File Upload ── */
+  .file-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    color: var(--text-faint);
+  }
+
+  .file-btn:hover {
+    border-color: var(--accent-dim);
+    color: var(--accent);
+    background: var(--surface);
+  }
+
+  .file-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+  .file-drop-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(12, 12, 14, 0.92);
+    z-index: 10;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 2px dashed var(--accent-dim);
+    border-radius: var(--radius);
+    margin: 8px;
+    pointer-events: none;
+  }
+
+  .file-drop-overlay.active { display: flex; }
+
+  .file-drop-overlay svg { width: 40px; height: 40px; fill: var(--accent-dim); }
+
+  .file-drop-overlay span {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--accent-dim);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Conversations Modal ── */
+  .conv-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(12, 12, 14, 0.85);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .conv-modal.active { display: flex; }
+
+  .conv-modal-inner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 480px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .conv-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .conv-modal-header h3 {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .conv-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .conv-modal-close:hover { color: var(--text); }
+
+  .conv-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .conv-list::-webkit-scrollbar { width: 4px; }
+  .conv-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .conv-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .conv-item:hover { background: var(--surface-2); }
+
+  .conv-item-info { flex: 1; min-width: 0; }
+
+  .conv-item-title {
+    font-size: 0.82rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .conv-item-meta {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-faint);
+    margin-top: 3px;
+  }
+
+  .conv-item-delete {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    border-radius: 4px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .conv-item-delete:hover { color: #e05050; background: rgba(224, 80, 80, 0.1); }
+
+  .conv-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-faint);
+    font-size: 0.82rem;
+  }
+
+  /* ── Token Context Bar ── */
+  .token-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .token-bar-track {
+    width: 48px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .token-bar-fill {
+    height: 100%;
+    background: var(--accent-dim);
+    border-radius: 3px;
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+
+  .token-bar-fill.warn { background: #d0a070; }
+  .token-bar-fill.danger { background: #e05050; }
+
+  /* ── Markdown in Messages ── */
+  .message.assistant.rendered { white-space: normal; }
+
+  .message.assistant.rendered p { margin: 0 0 0.6em; }
+  .message.assistant.rendered p:last-child { margin-bottom: 0; }
+
+  .message.assistant.rendered h1,
+  .message.assistant.rendered h2,
+  .message.assistant.rendered h3 {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--text);
+    margin: 0.8em 0 0.4em;
+    line-height: 1.3;
+  }
+
+  .message.assistant.rendered h1 { font-size: 1rem; }
+  .message.assistant.rendered h2 { font-size: 0.92rem; }
+  .message.assistant.rendered h3 { font-size: 0.86rem; }
+
+  .message.assistant.rendered code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  .message.assistant.rendered pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 0.6em 0;
+    overflow-x: auto;
+  }
+
+  .message.assistant.rendered pre code {
+    background: none;
+    padding: 0;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .message.assistant.rendered ul,
+  .message.assistant.rendered ol {
+    padding-left: 1.4em;
+    margin: 0.4em 0;
+  }
+
+  .message.assistant.rendered li { margin: 0.2em 0; }
+
+  .message.assistant.rendered blockquote {
+    border-left: 3px solid var(--accent-dim);
+    padding-left: 12px;
+    margin: 0.6em 0;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .message.assistant.rendered a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .message.assistant.rendered strong { color: var(--text); }
+
+  .message.assistant.rendered hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0.8em 0;
+  }
+
+  .message.file-context {
+    align-self: center;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    padding: 8px 14px;
+    border-radius: var(--radius);
   }
 
   /* ── Animations ── */
@@ -1072,13 +1523,56 @@
   </div>
 
   <!-- Chat Interface -->
-  <div class="chat-container" id="chatContainer">
+  <div class="chat-container" id="chatContainer" style="position:relative;">
+
+    <!-- Settings Panel (collapsible) -->
+    <div class="settings-panel" id="settingsPanel">
+      <div class="settings-grid">
+        <div class="settings-section">
+          <h4>System Prompt</h4>
+          <select class="preset-select" id="presetSelect" onchange="applyPreset(this.value)">
+            <option value="">None (default)</option>
+            <option value="coding">Coding Assistant</option>
+            <option value="writing">Writing Editor</option>
+            <option value="translator">Translator</option>
+            <option value="concise">Concise Answers</option>
+          </select>
+          <textarea class="system-prompt-input" id="systemPromptInput" placeholder="Enter a system prompt to set the assistant's behavior…" rows="3"></textarea>
+        </div>
+        <div class="settings-section">
+          <h4>Generation</h4>
+          <div class="settings-field">
+            <label>Temperature <span class="val" id="tempVal">0.7</span></label>
+            <input type="range" id="tempSlider" min="0" max="2" step="0.1" value="0.7" oninput="document.getElementById('tempVal').textContent = this.value">
+          </div>
+          <div class="settings-field">
+            <label>Top-P <span class="val" id="topPVal">0.9</span></label>
+            <input type="range" id="topPSlider" min="0" max="1" step="0.05" value="0.9" oninput="document.getElementById('topPVal').textContent = this.value">
+          </div>
+          <div class="settings-field">
+            <label>Max Tokens <span class="val" id="maxTokVal">1024</span></label>
+            <input type="range" id="maxTokSlider" min="64" max="4096" step="64" value="1024" oninput="document.getElementById('maxTokVal').textContent = this.value">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Drop Overlay -->
+    <div class="file-drop-overlay" id="fileDropOverlay">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+      <span>Drop file to add as context</span>
+    </div>
+
     <div class="messages" id="messages">
       <div class="message system">Model loaded · all processing is local</div>
     </div>
 
     <div class="input-area">
       <div class="input-row">
+        <button class="file-btn" id="fileBtn" onclick="document.getElementById('fileInput').click()" title="Upload file as context">
+          <svg viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5V6H9v9.5a3 3 0 006 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
+        </button>
+        <input type="file" id="fileInput" style="display:none" accept=".txt,.md,.json,.js,.ts,.py,.html,.css,.csv,.xml,.yaml,.yml,.toml,.sh,.rb,.go,.rs,.c,.cpp,.h,.java,.kt,.swift" onchange="handleFileUpload(this)">
         <div class="input-wrapper">
           <textarea
             id="userInput"
@@ -1091,10 +1585,49 @@
         <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
           <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
+        <button class="stop-btn" id="stopBtn" onclick="stopGeneration()">
+          <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        </button>
       </div>
       <div class="input-meta">
-        <span id="modelLabel">—</span>
-        <span id="tokenInfo">Ready</span>
+        <div class="input-meta-left">
+          <span id="modelLabel">—</span>
+          <button class="toolbar-btn" id="settingsToggle" onclick="toggleSettings()">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 00-.48-.41h-3.84a.48.48 0 00-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87a.48.48 0 00.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.6 3.6 0 0112 15.6z"/></svg>
+          </button>
+          <button class="toolbar-btn" id="newChatBtn" onclick="newChat()">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            New
+          </button>
+          <button class="toolbar-btn" onclick="showConversations()">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+            History
+          </button>
+          <button class="toolbar-btn" onclick="exportConversation()">
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Export
+          </button>
+        </div>
+        <div class="input-meta-right">
+          <div class="token-bar" id="tokenBar">
+            <div class="token-bar-track"><div class="token-bar-fill" id="tokenBarFill"></div></div>
+            <span id="tokenContext">0 tokens</span>
+          </div>
+          <span id="tokenInfo">Ready</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conversations Modal -->
+  <div class="conv-modal" id="convModal">
+    <div class="conv-modal-inner">
+      <div class="conv-modal-header">
+        <h3>Conversations</h3>
+        <button class="conv-modal-close" onclick="hideConversations()">&times;</button>
+      </div>
+      <div class="conv-list" id="convList">
+        <div class="conv-empty">No saved conversations yet</div>
       </div>
     </div>
   </div>
@@ -1103,6 +1636,7 @@
 <script type="module">
   import * as webllm from "https://esm.run/@mlc-ai/web-llm";
   import { pipeline as createPipeline, TextStreamer } from "https://esm.run/@huggingface/transformers@4.0.0-next.3";
+  import { marked } from "https://esm.run/marked";
 
   // ── Available models (curated for reasonable browser download) ──
   const MODELS = [
@@ -1176,8 +1710,303 @@
   let engine = null;       // WebLLM engine
   let tfPipeline = null;   // Transformers.js text-generation pipeline
   let isGenerating = false;
+  let shouldStop = false;
   let chatHistory = [];
   let hasWebGPU = false;
+  let currentConvId = null;
+
+  // Configure marked
+  marked.setOptions({ breaks: true, gfm: true });
+
+  // ── System Prompt Presets ──
+  const PRESETS = {
+    coding: "You are an expert programming assistant. Write clean, well-structured code. Explain your approach briefly. Use markdown code blocks with language tags.",
+    writing: "You are a skilled writing editor. Help improve clarity, grammar, and style. Be constructive and specific with suggestions. Preserve the author's voice.",
+    translator: "You are a professional translator. Translate text accurately while preserving tone and nuance. If the source language isn't specified, detect it. Always state the detected source language.",
+    concise: "Be concise. Answer in as few words as possible while remaining accurate and helpful. Use bullet points for lists. Skip pleasantries.",
+  };
+
+  window.applyPreset = function (key) {
+    const input = document.getElementById("systemPromptInput");
+    input.value = PRESETS[key] || "";
+  };
+
+  // ── Settings Panel ──
+  window.toggleSettings = function () {
+    const panel = document.getElementById("settingsPanel");
+    const btn = document.getElementById("settingsToggle");
+    panel.classList.toggle("active");
+    btn.classList.toggle("active");
+  };
+
+  function getGenParams() {
+    return {
+      temperature: parseFloat(document.getElementById("tempSlider").value),
+      top_p: parseFloat(document.getElementById("topPSlider").value),
+      max_tokens: parseInt(document.getElementById("maxTokSlider").value),
+    };
+  }
+
+  function getSystemPrompt() {
+    const input = document.getElementById("systemPromptInput");
+    return input ? input.value.trim() : "";
+  }
+
+  // ── IndexedDB Persistence ──
+  const DB_NAME = "localmind";
+  const DB_VERSION = 1;
+  const STORE_NAME = "conversations";
+
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: "id" });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function saveConversation() {
+    if (chatHistory.length === 0) return;
+    const id = currentConvId || Date.now().toString();
+    currentConvId = id;
+    const firstUserMsg = chatHistory.find(m => m.role === "user");
+    const title = firstUserMsg ? firstUserMsg.content.slice(0, 60) : "New conversation";
+    const conv = {
+      id,
+      title,
+      model: activeModelId,
+      modelName: MODELS.find(m => m.id === activeModelId)?.name || "Unknown",
+      messages: chatHistory,
+      systemPrompt: getSystemPrompt(),
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      const db = await openDB();
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      tx.objectStore(STORE_NAME).put(conv);
+    } catch (e) { console.error("Failed to save conversation:", e); }
+  }
+
+  async function loadConversationList() {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const req = tx.objectStore(STORE_NAME).getAll();
+      return new Promise((resolve) => {
+        req.onsuccess = () => resolve(req.result.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
+        req.onerror = () => resolve([]);
+      });
+    } catch { return []; }
+  }
+
+  async function deleteConversation(id) {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      tx.objectStore(STORE_NAME).delete(id);
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadConversation(id) {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const req = tx.objectStore(STORE_NAME).get(id);
+      return new Promise((resolve) => {
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      });
+    } catch { return null; }
+  }
+
+  window.showConversations = async function () {
+    const list = document.getElementById("convList");
+    const convs = await loadConversationList();
+    if (convs.length === 0) {
+      list.innerHTML = '<div class="conv-empty">No saved conversations yet</div>';
+    } else {
+      list.innerHTML = convs.map(c => {
+        const date = new Date(c.updatedAt);
+        const dateStr = date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        const msgCount = c.messages.filter(m => m.role === "user").length;
+        return `<div class="conv-item" onclick="restoreConversation('${c.id}')">
+          <div class="conv-item-info">
+            <div class="conv-item-title">${c.title}</div>
+            <div class="conv-item-meta">${c.modelName || "?"} · ${msgCount} msgs · ${dateStr}</div>
+          </div>
+          <button class="conv-item-delete" onclick="event.stopPropagation(); deleteAndRefresh('${c.id}')">Delete</button>
+        </div>`;
+      }).join("");
+    }
+    document.getElementById("convModal").classList.add("active");
+  };
+
+  window.hideConversations = function () {
+    document.getElementById("convModal").classList.remove("active");
+  };
+
+  window.deleteAndRefresh = async function (id) {
+    await deleteConversation(id);
+    if (currentConvId === id) { currentConvId = null; }
+    showConversations();
+  };
+
+  window.restoreConversation = async function (id) {
+    const conv = await loadConversation(id);
+    if (!conv) return;
+    hideConversations();
+    chatHistory = conv.messages;
+    currentConvId = conv.id;
+    if (conv.systemPrompt) {
+      document.getElementById("systemPromptInput").value = conv.systemPrompt;
+      document.getElementById("presetSelect").value = "";
+    }
+    // Re-render messages
+    const container = document.getElementById("messages");
+    container.innerHTML = '<div class="message system">Conversation restored · all processing is local</div>';
+    for (const msg of chatHistory) {
+      const div = appendMessage(msg.role, msg.content);
+      if (msg.role === "assistant") {
+        div.innerHTML = marked.parse(msg.content);
+        div.classList.add("rendered");
+      }
+    }
+    updateTokenCount();
+  };
+
+  window.newChat = function () {
+    chatHistory = [];
+    currentConvId = null;
+    const container = document.getElementById("messages");
+    container.innerHTML = '<div class="message system">New conversation · all processing is local</div>';
+    document.getElementById("systemPromptInput").value = "";
+    document.getElementById("presetSelect").value = "";
+    updateTokenCount();
+  };
+
+  // ── Export ──
+  window.exportConversation = function () {
+    if (chatHistory.length === 0) return;
+    const sysPrompt = getSystemPrompt();
+    let md = "# LocalMind Conversation\n\n";
+    if (sysPrompt) md += `**System:** ${sysPrompt}\n\n---\n\n`;
+    for (const msg of chatHistory) {
+      const label = msg.role === "user" ? "**You**" : "**Assistant**";
+      md += `${label}\n\n${msg.content}\n\n---\n\n`;
+    }
+    const blob = new Blob([md], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `localmind-${new Date().toISOString().slice(0, 10)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // ── File Upload / Drop ──
+  window.handleFileUpload = function (input) {
+    const file = input.files[0];
+    if (!file) return;
+    readAndInjectFile(file);
+    input.value = "";
+  };
+
+  function readAndInjectFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result;
+      const truncated = content.length > 50000 ? content.slice(0, 50000) + "\n\n[Truncated — file too large]" : content;
+      const contextMsg = `<file name="${file.name}" size="${file.size}" type="${file.type}">\n${truncated}\n</file>`;
+      chatHistory.push({ role: "user", content: contextMsg });
+
+      // Show file indicator in chat
+      const container = document.getElementById("messages");
+      const div = document.createElement("div");
+      div.className = "message file-context";
+      div.textContent = `📎 ${file.name} (${(file.size / 1024).toFixed(1)} KB) added as context`;
+      container.appendChild(div);
+      scrollToBottom();
+      updateTokenCount();
+    };
+    reader.readAsText(file);
+  }
+
+  // File drag-and-drop on chat container
+  function setupFileDrop() {
+    const chat = document.getElementById("chatContainer");
+    const overlay = document.getElementById("fileDropOverlay");
+    let dragCounter = 0;
+
+    chat.addEventListener("dragenter", (e) => {
+      e.preventDefault();
+      dragCounter++;
+      overlay.classList.add("active");
+    });
+
+    chat.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter <= 0) { overlay.classList.remove("active"); dragCounter = 0; }
+    });
+
+    chat.addEventListener("dragover", (e) => e.preventDefault());
+
+    chat.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dragCounter = 0;
+      overlay.classList.remove("active");
+      const file = e.dataTransfer.files[0];
+      if (file) readAndInjectFile(file);
+    });
+  }
+
+  // ── Token Count ──
+  function estimateTokens(text) {
+    // Rough approximation: ~4 chars per token for English
+    return Math.ceil(text.length / 4);
+  }
+
+  function updateTokenCount() {
+    const sysPrompt = getSystemPrompt();
+    let total = sysPrompt ? estimateTokens(sysPrompt) : 0;
+    for (const msg of chatHistory) {
+      total += estimateTokens(msg.content) + 4; // +4 for role/formatting overhead
+    }
+    const maxCtx = 4096; // conservative default
+    const pct = Math.min((total / maxCtx) * 100, 100);
+
+    document.getElementById("tokenContext").textContent = `~${total} tokens`;
+    const fill = document.getElementById("tokenBarFill");
+    fill.style.width = `${pct}%`;
+    fill.classList.remove("warn", "danger");
+    if (pct > 85) fill.classList.add("danger");
+    else if (pct > 65) fill.classList.add("warn");
+  }
+
+  // ── Stop Generation ──
+  window.stopGeneration = function () {
+    shouldStop = true;
+    if (activeBackend === "webllm" && engine) {
+      try { engine.interruptGenerate(); } catch (e) { console.error(e); }
+    }
+  };
+
+  function showStopButton() {
+    document.getElementById("sendBtn").style.display = "none";
+    const stop = document.getElementById("stopBtn");
+    stop.classList.add("active");
+  }
+
+  function hideStopButton() {
+    document.getElementById("stopBtn").classList.remove("active");
+    document.getElementById("sendBtn").style.display = "";
+  };
 
   // ── Check WebGPU Support ──
   async function checkWebGPU() {
@@ -1356,7 +2185,7 @@
 
     // Hide change model button, reset header
     document.getElementById("changeModelBtn").style.display = "none";
-    document.getElementById("headerStatus").textContent = "WebGPU Powered";
+    document.getElementById("headerStatus").textContent = "";
 
     // Refresh the grid
     await buildModelGrid();
@@ -1553,6 +2382,8 @@
       document.getElementById("changeModelBtn").style.display = "inline-block";
       document.getElementById("sendBtn").disabled = false;
       document.getElementById("userInput").focus();
+      currentConvId = null;
+      updateTokenCount();
 
     } catch (err) {
       clearInterval(timerInterval);
@@ -1605,8 +2436,17 @@
     input.value = "";
     autoResize(input);
     isGenerating = true;
-    document.getElementById("sendBtn").disabled = true;
+    shouldStop = false;
+    showStopButton();
     document.getElementById("tokenInfo").textContent = "Generating…";
+
+    // Build messages array with system prompt
+    const sysPrompt = getSystemPrompt();
+    const messages = [];
+    if (sysPrompt) messages.push({ role: "system", content: sysPrompt });
+    messages.push(...chatHistory);
+
+    const params = getGenParams();
 
     // Create assistant message bubble for streaming
     const bubble = appendMessage("assistant", "");
@@ -1620,6 +2460,7 @@
         const streamer = new TextStreamer(tfPipeline.tokenizer, {
           skip_prompt: true,
           callback_function: (token) => {
+            if (shouldStop) return;
             fullResponse += token;
             tokenCount++;
             bubble.textContent = fullResponse;
@@ -1627,10 +2468,13 @@
           },
         });
 
-        await tfPipeline(chatHistory, {
-          max_new_tokens: 2048,
-          do_sample: true,
+        await tfPipeline(messages, {
+          max_new_tokens: params.max_tokens,
+          temperature: params.temperature,
+          top_p: params.top_p,
+          do_sample: params.temperature > 0,
           streamer,
+          stopping_criteria: [() => shouldStop],
         });
 
         chatHistory.push({ role: "assistant", content: fullResponse });
@@ -1642,13 +2486,15 @@
       } else {
         // ── WebLLM streaming generation ──
         const reply = await engine.chat.completions.create({
-          messages: chatHistory,
-          temperature: 0.7,
-          max_tokens: 1024,
+          messages,
+          temperature: params.temperature,
+          top_p: params.top_p,
+          max_tokens: params.max_tokens,
           stream: true,
         });
 
         for await (const chunk of reply) {
+          if (shouldStop) break;
           const delta = chunk.choices[0]?.delta?.content || "";
           fullResponse += delta;
           tokenCount++;
@@ -1663,15 +2509,27 @@
         document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
       }
 
+      // Render markdown after streaming completes
+      if (fullResponse) {
+        bubble.innerHTML = marked.parse(fullResponse);
+        bubble.classList.add("rendered");
+      }
+
     } catch (err) {
-      bubble.textContent = `[Error: ${err.message}]`;
-      console.error(err);
-      document.getElementById("tokenInfo").textContent = "Error";
+      if (!shouldStop) {
+        bubble.textContent = `[Error: ${err.message}]`;
+        console.error(err);
+        document.getElementById("tokenInfo").textContent = "Error";
+      }
     }
 
     isGenerating = false;
+    shouldStop = false;
+    hideStopButton();
     document.getElementById("sendBtn").disabled = false;
     document.getElementById("userInput").focus();
+    updateTokenCount();
+    saveConversation();
   };
 
   // ── Helpers ──
@@ -1721,6 +2579,9 @@
   (async () => {
     hasWebGPU = await checkWebGPU();
     await buildModelGrid();
+    setupFileDrop();
+    // Pre-initialize IndexedDB
+    try { await openDB(); } catch (e) { console.error("IndexedDB init failed:", e); }
   })();
 </script>
 
