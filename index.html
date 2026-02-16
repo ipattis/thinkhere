@@ -2583,6 +2583,7 @@
     let isGenerating = false;
     let shouldStop = false;
     let generationController = null;
+    let stopResolve = null; // resolves the stop promise so UI can snap back
 
     const EMBEDDING_MODEL = {
       id: "onnx-community/Qwen3-Embedding-0.6B-ONNX",
@@ -3361,6 +3362,8 @@
       if (generationController) {
         try { generationController.abort(); } catch (e) { console.error(e); }
       }
+      // Immediately resolve the stop promise so UI snaps back
+      if (stopResolve) { stopResolve(); stopResolve = null; }
     };
 
     function showStopButton() {
@@ -4267,6 +4270,7 @@
         if (activeBackend === "transformers" && tfPipeline) {
           // ── Transformers.js streaming generation ──
           generationController = new AbortController();
+          const stopPromise = new Promise(resolve => { stopResolve = resolve; });
           const streamer = new TextStreamer(tfPipeline.tokenizer, {
             skip_prompt: true,
             callback_function: (token) => {
@@ -4278,7 +4282,7 @@
             },
           });
 
-          await tfPipeline(messages, {
+          const genPromise = tfPipeline(messages, {
             max_new_tokens: params.max_tokens,
             temperature: params.temperature,
             top_p: params.top_p,
@@ -4286,14 +4290,21 @@
             streamer,
             stopping_criteria: [() => shouldStop],
             signal: generationController.signal,
-          });
+          }).then(() => "done").catch(() => "done");
+
+          // Race: if user hits stop, UI snaps back immediately
+          // The pipeline may keep running briefly in the background until it finishes its current token
+          await Promise.race([genPromise, stopPromise]);
           generationController = null;
+          stopResolve = null;
 
           chatHistory.push({ role: "assistant", content: fullResponse });
 
-          const elapsed = (performance.now() - startTime) / 1000;
-          const tps = (tokenCount / elapsed).toFixed(1);
-          document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
+          if (!shouldStop) {
+            const elapsed = (performance.now() - startTime) / 1000;
+            const tps = (tokenCount / elapsed).toFixed(1);
+            document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
+          }
 
         } else {
           // ── WebLLM streaming generation ──
