@@ -3529,18 +3529,11 @@
       const dp = deviceProfile;
       const typeIcon = dp.isMobile ? "📱" : dp.isTablet ? "📋" : "💻";
       const typeLabel = dp.deviceType.charAt(0).toUpperCase() + dp.deviceType.slice(1);
-      const ramClass = dp.isLowEnd ? "info-warn" : "info-ok";
-      const ramPrefix = dp.ramCapped ? "≥" : "~";
-      const ramLabel = `${ramPrefix}${dp.deviceRAM_GB} GB RAM`;
 
-      let storageHTML = "";
-      // Storage info will be populated async
       bar.innerHTML = `<div class="device-info-bar">
       <span>${typeIcon} ${typeLabel}</span>
       <span class="info-sep">·</span>
       <span>${dp.browserName} ${dp.browserVersion}</span>
-      <span class="info-sep">·</span>
-      <span class="${ramClass}">${ramLabel}</span>
       <span id="deviceStorageInfo"></span>
     </div>`;
 
