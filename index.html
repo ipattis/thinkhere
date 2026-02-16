@@ -3408,7 +3408,18 @@
       let name = "Unknown";
       let version = 0;
 
-      if (/Edg\//.test(ua)) {
+      // iOS browsers use WebKit under the hood and have distinct UA tokens
+      if (/CriOS\//.test(ua)) {
+        name = "Chrome";  // Chrome on iOS
+        version = parseInt(ua.match(/CriOS\/(\d+)/)?.[1] || "0");
+      } else if (/FxiOS\//.test(ua)) {
+        name = "Firefox";  // Firefox on iOS
+        version = parseInt(ua.match(/FxiOS\/(\d+)/)?.[1] || "0");
+      } else if (/EdgiOS\//.test(ua)) {
+        name = "Edge";  // Edge on iOS
+        version = parseInt(ua.match(/EdgiOS\/(\d+)/)?.[1] || "0");
+        // Desktop / Android browsers
+      } else if (/Edg\//.test(ua)) {
         name = "Edge";
         version = parseInt(ua.match(/Edg\/(\d+)/)?.[1] || "0");
       } else if (/Chrome\//.test(ua) && !/Edg\//.test(ua)) {
