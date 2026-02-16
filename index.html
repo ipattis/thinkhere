@@ -4012,22 +4012,24 @@
       try {
         if (selectedModel.backend === "transformers") {
           // ── Transformers.js v4 / ONNX Runtime Web path ──
-          const TOTAL_FILE_SIZE = selectedModel.sizeMB * 1e6; // approximate total bytes
           const fileProgress = new Map();
-          // iOS (iPhone/iPad) WebGPU is unreliable for ONNX — fall back to WASM
+          // iOS (iPhone/iPad) WebGPU is unreliable for ONNX — fall back to WASM with q4 dtype
           const isIOS = /iPhone|iPod|iPad/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
           const tfDevice = isIOS ? "wasm" : "webgpu";
+          const tfDtype = isIOS ? "q4" : "q4f16";
+          // q4 files are ~1.6x larger than q4f16
+          const TOTAL_FILE_SIZE = (isIOS ? selectedModel.sizeMB * 1.6 : selectedModel.sizeMB) * 1e6;
           label.textContent = isIOS
             ? "Loading ONNX model via Transformers.js (WASM)…"
             : "Loading ONNX model via Transformers.js…";
           tfPipeline = await createPipeline("text-generation", selectedModel.id, {
-            dtype: "q4f16",
+            dtype: tfDtype,
             device: tfDevice,
             progress_callback: (p) => {
               if (p.status === "progress" && typeof p.loaded === "number") {
                 fileProgress.set(p.file, p.loaded);
                 const loaded = Array.from(fileProgress.values()).reduce((a, b) => a + b, 0);
-                const pct = Math.round((loaded / TOTAL_FILE_SIZE) * 100);
+                const pct = Math.min(99, Math.round((loaded / TOTAL_FILE_SIZE) * 100));
                 bar.style.width = `${pct}%`;
                 statProgress.textContent = `${pct}%`;
                 label.textContent = `Downloading model… ${pct}%`;
