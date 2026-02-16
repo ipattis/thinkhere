@@ -1,12 +1,12 @@
-# LocalMind
+# ThinkHere
 
-**Privacy-first AI chat that runs entirely in your browser.**
+**Privacy-first AI chat that runs entirely in your browser.** [thinkhere.ai](https://thinkhere.ai)
 
 No servers. No API keys. No data leaves your device. Powered by [WebLLM](https://github.com/mlc-ai/web-llm), [Transformers.js](https://huggingface.co/docs/transformers.js), and WebGPU.
 
 ## How it works
 
-LocalMind downloads and runs open-source language models directly in your browser using WebGPU for GPU-accelerated inference. Models are cached after the first download, so subsequent loads take only seconds.
+ThinkHere downloads and runs open-source language models directly in your browser using WebGPU for GPU-accelerated inference. Models are cached after the first download, so subsequent loads take only seconds.
 
 Two runtime architectures are supported:
 
@@ -85,14 +85,14 @@ This site is designed for static hosting. To deploy on GitHub Pages:
 1. Push the repo to GitHub
 2. Go to **Settings > Pages**
 3. Set the source to the branch you want to deploy (e.g. `main`)
-4. The site will be live at `https://<username>.github.io/LocalMind/`
+4. The site will be live at `https://thinkhere.ai`
 
 The `.nojekyll` file is included to ensure GitHub Pages serves files as-is without Jekyll processing.
 
 ## Project structure
 
 ```
-LocalMind/
+thinkhere/
 ├── index.html      # The entire application (HTML + CSS + JS)
 ├── favicon.svg     # Browser tab icon
 ├── 404.html        # Custom 404 page for GitHub Pages
