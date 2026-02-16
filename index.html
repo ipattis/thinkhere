@@ -588,7 +588,7 @@
 
     .arch-section {
       width: 100%;
-      max-width: 580px;
+      max-width: 900px;
       margin-top: 8px;
       padding-top: 32px;
       border-top: 1px solid var(--border);
@@ -605,8 +605,14 @@
 
     .arch-columns {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .arch-columns {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media (max-width: 600px) {
@@ -2112,6 +2118,100 @@
       border-radius: 3px;
     }
 
+    /* ── Multimodal Attachments ── */
+    .multimodal-btns {
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .multimodal-btns.active {
+      display: flex;
+    }
+
+    .mm-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      color: var(--text-faint);
+    }
+
+    .mm-btn:hover {
+      border-color: var(--accent-dim);
+      color: var(--accent);
+      background: var(--surface);
+    }
+
+    .mm-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .attachment-preview {
+      display: none;
+      gap: 8px;
+      padding: 8px 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .attachment-preview.active {
+      display: flex;
+    }
+
+    .attachment-thumb {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-dim);
+    }
+
+    .attachment-thumb img {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .attachment-thumb .remove-attach {
+      background: none;
+      border: none;
+      color: var(--text-faint);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0 2px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .attachment-thumb .remove-attach:hover {
+      color: #e05050;
+    }
+
+    .message-image {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: block;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 600px) {
       header {
@@ -2192,7 +2292,7 @@
     <!-- Model Selection -->
     <div class="model-selector" id="modelSelector">
       <h2 id="models">Run AI <em>entirely</em> in your browser</h2>
-      <p>No servers, no API keys, no data leaves your device. Powered by WebLLM and Transformers.js — everything runs
+      <p>No servers, no API keys, no data leaves your device. Powered by WebLLM, Transformers.js, and MediaPipe — everything runs
         locally on your hardware.</p>
 
       <div id="webgpuCheck"></div>
@@ -2209,7 +2309,7 @@
           First load downloads model weights to your browser — this is a <strong>one-time download</strong>. After that,
           the model loads from cache in seconds.
         </div>
-        <div class="notice-detail">WebLLM models require WebGPU (Chrome 113+, Edge 113+). Transformers.js models use
+        <div class="notice-detail">WebLLM and MediaPipe models require WebGPU (Chrome 113+, Edge 113+). Transformers.js models use
           ONNX Runtime Web. All need network access to huggingface.co</div>
       </div>
 
@@ -2223,7 +2323,7 @@
 
       <!-- Architecture Explainer -->
       <div class="arch-section" id="architecture">
-        <h3>Two paths to in-browser AI</h3>
+        <h3>Three paths to in-browser AI</h3>
         <div class="arch-columns">
           <div class="arch-card">
             <h4>WebLLM + MLC</h4>
@@ -2297,8 +2397,41 @@
             <p class="arch-label">Used by</p>
             <p>Qwen3 4B Instruct, GPT-OSS 20B</p>
           </div>
+          <div class="arch-card">
+            <h4>MediaPipe + LiteRT</h4>
+            <div class="arch-flow">
+              <div class="arch-flow-step">HuggingFace<span class="step-sub">LiteRT model file (.litertlm)</span></div>
+              <div class="arch-flow-arrow"><svg viewBox="0 0 12 18">
+                  <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5" />
+                  <polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+                </svg></div>
+              <div class="arch-flow-step highlight">MediaPipe GenAI<span class="step-sub">LLM Inference API</span></div>
+              <div class="arch-flow-arrow"><svg viewBox="0 0 12 18">
+                  <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5" />
+                  <polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+                </svg></div>
+              <div class="arch-flow-step">WebGPU Compute<span class="step-sub">Multimodal: text + images</span>
+              </div>
+              <div class="arch-flow-arrow"><svg viewBox="0 0 12 18">
+                  <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1.5" />
+                  <polyline points="2.5,9.5 6,14 9.5,9.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+                </svg></div>
+              <div class="arch-flow-step step-end">Your GPU</div>
+            </div>
+            <p>Google's <strong>MediaPipe LLM Inference</strong> API loads Gemma models in the <strong>LiteRT</strong>
+              format (formerly TFLite). Supports multimodal input — text and images — all processed on-device
+              via WebGPU.</p>
+            <div class="arch-label">Trade-offs</div>
+            <ul>
+              <li>Multimodal: text and image input</li>
+              <li>Single large file download (no split shards)</li>
+              <li>Requires WebGPU — no WASM fallback</li>
+            </ul>
+            <p class="arch-label">Used by</p>
+            <p>Gemma 3n E2B, Gemma 3n E4B</p>
+          </div>
         </div>
-        <div class="arch-shared">Both methods use WebGPU for GPU acceleration. All model weights are cached in your
+        <div class="arch-shared">All three methods use WebGPU for GPU acceleration. All model weights are cached in your
           browser after the first download — no server involved.</div>
       </div>
     </div>
@@ -2405,6 +2538,7 @@
       </div>
 
       <div class="input-area">
+        <div class="attachment-preview" id="attachmentPreview"></div>
         <div class="input-row">
           <button class="file-btn" id="fileBtn" onclick="document.getElementById('fileInput').click()"
             title="Upload file as context">
@@ -2413,6 +2547,12 @@
                 d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5V6H9v9.5a3 3 0 006 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z" />
             </svg>
           </button>
+          <div class="multimodal-btns" id="multimodalBtns">
+            <button class="mm-btn" id="mmImageBtn" onclick="document.getElementById('mmImageInput').click()" title="Attach image">
+              <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            </button>
+          </div>
+          <input type="file" id="mmImageInput" style="display:none" accept="image/*" onchange="handleImageUpload(this)">
           <input type="file" id="fileInput" style="display:none"
             accept=".txt,.md,.json,.js,.ts,.py,.html,.css,.csv,.xml,.yaml,.yml,.toml,.sh,.rb,.go,.rs,.c,.cpp,.h,.java,.kt,.swift"
             onchange="handleFileUpload(this)">
@@ -2489,7 +2629,11 @@
   <script type="module">
     import * as webllm from "https://esm.run/@mlc-ai/web-llm";
     import { pipeline as createPipeline, TextStreamer } from "https://esm.run/@huggingface/transformers@4.0.0-next.3";
+    import { FilesetResolver, LlmInference } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/genai_bundle.mjs";
     import { marked } from "https://esm.run/marked";
+
+    const MEDIAPIPE_WASM_PATH = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/wasm";
+    const MEDIAPIPE_CACHE_NAME = "thinkhere-mediapipe-models";
 
     // ── Available models (curated for reasonable browser download) ──
     const MODELS = [
@@ -2570,6 +2714,38 @@
         minRAM_GB: 16,
         mobileOk: false
       },
+      {
+        id: "gemma-3n-E2B",
+        name: "Gemma 3n E2B",
+        desc: "Google's multimodal model. Text & image input.",
+        tech: "MediaPipe LLM · LiteRT · WebGPU · int4",
+        size: "~3 GB",
+        sizeMB: 3000,
+        time: "~3 – 6 min",
+        backend: "mediapipe",
+        multimodal: true,
+        supportsSystemPrompt: true,
+        modelFile: "gemma-3n-E2B-it-int4-Web.litertlm",
+        hfRepo: "Volko76/gemma-3n-E2B-it-litert-lm",
+        minRAM_GB: 6,
+        mobileOk: "tablet"
+      },
+      {
+        id: "gemma-3n-E4B",
+        name: "Gemma 3n E4B",
+        desc: "Larger Gemma multimodal model. Higher quality.",
+        tech: "MediaPipe LLM · LiteRT · WebGPU · int4",
+        size: "~4.3 GB",
+        sizeMB: 4300,
+        time: "~4 – 10 min",
+        backend: "mediapipe",
+        multimodal: true,
+        supportsSystemPrompt: true,
+        modelFile: "gemma-3n-E4B-it-int4-Web.litertlm",
+        hfRepo: "charlesLoder/gemma-3n-E4B-it-litert-lm",
+        minRAM_GB: 8,
+        mobileOk: false
+      },
     ];
 
     let selectedModel = null;
@@ -2577,6 +2753,8 @@
     let activeBackend = null;
     let engine = null;       // WebLLM engine
     let tfPipeline = null;   // Transformers.js text-generation pipeline
+    let mpInference = null;  // MediaPipe LlmInference instance
+    let pendingAttachments = []; // multimodal: [{type: "image"|"audio", data, name}]
     let embeddingPipeline = null; // Transformers.js embedding pipeline for KB
     let ragEnabled = localStorage.getItem("kb_ragEnabled") === "true";
     let kbDocuments = new Map(); // in-memory metadata cache
@@ -3273,6 +3451,73 @@
       URL.revokeObjectURL(url);
     };
 
+    // ── Multimodal: Image Upload ──
+    window.handleImageUpload = function (input) {
+      const file = input.files[0];
+      if (!file) return;
+      input.value = "";
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        pendingAttachments.push({ type: "image", data: e.target.result, name: file.name });
+        updateAttachmentPreview();
+      };
+      reader.readAsDataURL(file);
+    };
+
+    // ── Multimodal: Attachment Preview ──
+    function updateAttachmentPreview() {
+      const container = document.getElementById("attachmentPreview");
+      if (pendingAttachments.length === 0) {
+        container.classList.remove("active");
+        container.innerHTML = "";
+        return;
+      }
+      container.classList.add("active");
+      container.innerHTML = pendingAttachments.map((a, i) => {
+        return `<div class="attachment-thumb">
+            <img src="${a.data}" alt="${a.name}">
+            <span>${a.name}</span>
+            <button class="remove-attach" onclick="removeAttachment(${i})">×</button>
+          </div>`;
+      }).join("");
+    }
+
+    window.removeAttachment = function (idx) {
+      pendingAttachments.splice(idx, 1);
+      updateAttachmentPreview();
+    };
+
+    // ── Multimodal: Show/hide buttons based on active model ──
+    function updateMultimodalUI() {
+      const model = MODELS.find(m => m.id === activeModelId);
+      const btns = document.getElementById("multimodalBtns");
+      if (model && model.multimodal) {
+        btns.classList.add("active");
+      } else {
+        btns.classList.remove("active");
+        pendingAttachments = [];
+        updateAttachmentPreview();
+      }
+    }
+
+    // ── Multimodal: Paste handler for images ──
+    document.addEventListener("paste", (e) => {
+      const model = MODELS.find(m => m.id === activeModelId);
+      if (!model || !model.multimodal) return;
+      const items = Array.from(e.clipboardData?.items || []);
+      const imageItem = items.find(i => i.type.startsWith("image/"));
+      if (imageItem) {
+        e.preventDefault();
+        const file = imageItem.getAsFile();
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          pendingAttachments.push({ type: "image", data: ev.target.result, name: file.name || "pasted-image.png" });
+          updateAttachmentPreview();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
     // ── File Upload / Drop ──
     window.handleFileUpload = function (input) {
       const file = input.files[0];
@@ -3326,7 +3571,19 @@
         dragCounter = 0;
         overlay.classList.remove("active");
         const file = e.dataTransfer.files[0];
-        if (file) readAndInjectFile(file);
+        if (!file) return;
+        // Route images to multimodal attachments if active model supports it
+        const model = MODELS.find(m => m.id === activeModelId);
+        if (model && model.multimodal && file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            pendingAttachments.push({ type: "image", data: ev.target.result, name: file.name });
+            updateAttachmentPreview();
+          };
+          reader.readAsDataURL(file);
+        } else {
+          readAndInjectFile(file);
+        }
       });
     }
 
@@ -3392,7 +3649,7 @@
       if (bp.name === "Firefox") {
         container.innerHTML = `<div class="browser-version-warning">
         <strong>Firefox detected</strong> (v${bp.version})<br>
-        WebGPU is not yet enabled by default in Firefox. WebLLM models will not work.<br>
+        WebGPU is not yet enabled by default in Firefox. WebLLM and MediaPipe models will not work.<br>
         Transformers.js models can still run via ONNX Runtime Web (WASM fallback).<br>
         For full GPU acceleration, try <code>Chrome 113+</code> or <code>Edge 113+</code>.
       </div>`;
@@ -3400,7 +3657,8 @@
         container.innerHTML = `<div class="browser-version-warning">
         <strong>Safari ${bp.version} detected</strong><br>
         WebGPU requires Safari 18+. Your version may not support GPU-accelerated models.<br>
-        Transformers.js models may fall back to WASM. For best results, update Safari or use <code>Chrome 113+</code>.
+        Transformers.js models may fall back to WASM. WebLLM and MediaPipe models require WebGPU.<br>
+        For best results, update Safari or use <code>Chrome 113+</code>.
       </div>`;
       } else if ((bp.name === "Chrome" || bp.name === "Edge") && bp.version < 113) {
         container.innerHTML = `<div class="browser-version-warning">
@@ -3413,7 +3671,7 @@
         if (!container.innerHTML) {
           container.innerHTML = `<div class="webgpu-warning">
           <strong>WebGPU not available.</strong><br>
-          WebLLM models require WebGPU (Chrome 113+, Edge 113+). Transformers.js models can still run via ONNX Runtime Web.
+          WebLLM and MediaPipe models require WebGPU (Chrome 113+, Edge 113+). Transformers.js models can still run via ONNX Runtime Web.
         </div>`;
         }
         return false;
@@ -3568,6 +3826,15 @@
     // ── Reusable Cache Clear Function ──
     async function clearModelCache(modelId) {
       try {
+        // MediaPipe models: clear from dedicated cache
+        const model = MODELS.find(m => m.id === modelId);
+        if (model && model.backend === "mediapipe" && model.modelFile) {
+          try {
+            const mpCache = await caches.open(MEDIAPIPE_CACHE_NAME);
+            await mpCache.delete(mediapipeCacheKey(model.modelFile));
+          } catch { /* skip */ }
+        }
+
         const cacheNames = await caches.keys();
         for (const name of cacheNames) {
           if (name.includes(modelId)) {
@@ -3596,7 +3863,7 @@
       try {
         const cacheNames = await caches.keys();
         for (const name of cacheNames) {
-          if (name.includes("transformers") || name.includes("webllm") || name.includes("onnx")) {
+          if (name.includes("transformers") || name.includes("webllm") || name.includes("onnx") || name === MEDIAPIPE_CACHE_NAME) {
             await caches.delete(name);
           }
         }
@@ -3683,6 +3950,19 @@
           }
         }
 
+        // MediaPipe models: check dedicated cache for model files
+        if (cacheNames.includes(MEDIAPIPE_CACHE_NAME)) {
+          try {
+            const mpCache = await caches.open(MEDIAPIPE_CACHE_NAME);
+            for (const m of MODELS) {
+              if (m.backend === "mediapipe" && m.modelFile) {
+                const match = await mpCache.match(mediapipeCacheKey(m.modelFile));
+                if (match) cachedIds.add(m.id);
+              }
+            }
+          } catch { /* skip */ }
+        }
+
         // Deep pass: check inside cache entries for Transformers.js models
         const unchecked = MODELS.filter(m => !cachedIds.has(m.id));
         if (unchecked.length > 0) {
@@ -3735,7 +4015,7 @@
       MODELS.forEach((m) => {
         const isActive = m.id === activeModelId;
         const isCached = cachedIds.has(m.id);
-        const isDisabledWebGPU = m.backend === "webllm" && !hasWebGPU;
+        const isDisabledWebGPU = (m.backend === "webllm" || m.backend === "mediapipe") && !hasWebGPU;
 
         // Device compatibility check
         let deviceIncompat = false;
@@ -3902,7 +4182,12 @@
         try { await engine.unload(); } catch (e) { console.error(e); }
         engine = null;
       }
+      if (mpInference) {
+        try { mpInference.close(); } catch (e) { console.error(e); }
+        mpInference = null;
+      }
       tfPipeline = null;
+      pendingAttachments = [];
       activeModelId = null;
       activeBackend = null;
       selectedModel = null;
@@ -3916,6 +4201,69 @@
       await buildModelGrid();
     }
     window.unloadModel = unloadModel;
+
+    // ── MediaPipe Model Cache Helpers ──
+    function mediapipeCacheKey(modelFile) {
+      return `https://thinkhere.local/mediapipe/${modelFile}`;
+    }
+
+    async function getMediaPipeCachedBlob(modelFile) {
+      try {
+        const cache = await caches.open(MEDIAPIPE_CACHE_NAME);
+        const resp = await cache.match(mediapipeCacheKey(modelFile));
+        if (resp) return await resp.blob();
+      } catch (e) { console.warn("MediaPipe cache check failed:", e); }
+      return null;
+    }
+
+    async function downloadMediaPipeModel(hfRepo, modelFile, onProgress) {
+      const url = `https://huggingface.co/${hfRepo}/resolve/main/${modelFile}`;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`Download failed: ${resp.status} ${resp.statusText}`);
+
+      const contentLength = parseInt(resp.headers.get("content-length") || "0", 10);
+      const reader = resp.body.getReader();
+      const chunks = [];
+      let loaded = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        loaded += value.length;
+        if (onProgress && contentLength > 0) {
+          onProgress(loaded, contentLength);
+        }
+      }
+
+      const blob = new Blob(chunks);
+
+      // Cache for next time using a stable synthetic URL as the key
+      try {
+        const cache = await caches.open(MEDIAPIPE_CACHE_NAME);
+        await cache.put(mediapipeCacheKey(modelFile), new Response(blob.slice(0)));
+      } catch (e) { console.warn("MediaPipe cache store failed:", e); }
+
+      return blob;
+    }
+
+    // ── Gemma Prompt Formatter ──
+    function formatGemmaPrompt(messages) {
+      let prompt = "";
+      for (const msg of messages) {
+        if (msg.role === "system") {
+          // Gemma has no system role — inject as fake user/model exchange
+          prompt += `<start_of_turn>user\n${msg.content}<end_of_turn>\n`;
+          prompt += `<start_of_turn>model\nUnderstood.<end_of_turn>\n`;
+        } else if (msg.role === "user") {
+          prompt += `<start_of_turn>user\n${msg.content}<end_of_turn>\n`;
+        } else if (msg.role === "assistant") {
+          prompt += `<start_of_turn>model\n${msg.content}<end_of_turn>\n`;
+        }
+      }
+      prompt += `<start_of_turn>model\n`;
+      return prompt;
+    }
 
     // ── Load Model ──
     window.loadModel = async function () {
@@ -3953,11 +4301,12 @@
       }
 
       // If continuing with the already-active model, just return to chat
-      if (selectedModel.id === activeModelId && (engine || tfPipeline)) {
+      if (selectedModel.id === activeModelId && (engine || tfPipeline || mpInference)) {
         document.getElementById("modelSelector").style.display = "none";
         document.getElementById("chatContainer").classList.add("active");
         document.getElementById("userInput").focus();
         updateSystemPromptAvailability();
+        updateMultimodalUI();
         return;
       }
 
@@ -3966,7 +4315,12 @@
         try { await engine.unload(); } catch (e) { console.error(e); }
         engine = null;
       }
+      if (mpInference) {
+        try { mpInference.close(); } catch (e) { console.error(e); }
+        mpInference = null;
+      }
       tfPipeline = null;
+      pendingAttachments = [];
       activeModelId = null;
       activeBackend = null;
 
@@ -4013,7 +4367,13 @@
       }
 
       // Tips that rotate
-      const tips = selectedModel.backend === "transformers" ? [
+      const tips = selectedModel.backend === "mediapipe" ? [
+        "Downloading LiteRT model weights — this only happens once, then it's cached locally.",
+        "Gemma 3n supports text and image input in one model.",
+        "All data stays on your device. Nothing is sent to any server.",
+        "After caching, this model will load in just a few seconds next time.",
+        "MediaPipe uses WebGPU for fast on-device inference.",
+      ] : selectedModel.backend === "transformers" ? [
         "Downloading ONNX model weights — this only happens once, then it's cached locally.",
         "All data stays on your device. Nothing is sent to any server.",
         "ONNX Runtime Web runs inference efficiently in your browser.",
@@ -4049,7 +4409,49 @@
       setPhase("download");
 
       try {
-        if (selectedModel.backend === "transformers") {
+        if (selectedModel.backend === "mediapipe") {
+          // ── MediaPipe LLM Inference path ──
+          label.textContent = "Checking cache…";
+
+          let blob = await getMediaPipeCachedBlob(selectedModel.modelFile);
+          if (blob) {
+            label.textContent = "Loading from cache…";
+            bar.style.width = "100%";
+            statProgress.textContent = "100%";
+            statSize.textContent = `${(blob.size / 1e9).toFixed(1)} GB (cached)`;
+          } else {
+            label.textContent = `Downloading ${selectedModel.modelFile}…`;
+            blob = await downloadMediaPipeModel(selectedModel.hfRepo, selectedModel.modelFile, (loaded, total) => {
+              const pct = Math.min(99, Math.round((loaded / total) * 100));
+              bar.style.width = `${pct}%`;
+              statProgress.textContent = `${pct}%`;
+              label.textContent = `Downloading model… ${pct}%`;
+              statSize.textContent = `${(loaded / 1e9).toFixed(1)} / ${(total / 1e9).toFixed(1)} GB`;
+            });
+          }
+
+          // Compile phase
+          currentPhase = "compile";
+          setPhase("compile");
+          label.textContent = "Initializing MediaPipe LLM engine…";
+          tip.textContent = "Creating inference session — this may take a moment.";
+
+          const blobUrl = URL.createObjectURL(blob);
+          try {
+            const genai = await FilesetResolver.forGenAiTasks(MEDIAPIPE_WASM_PATH);
+            mpInference = await LlmInference.createFromOptions(genai, {
+              baseOptions: { modelAssetPath: blobUrl },
+              maxTokens: 4096,
+              topK: 40,
+              temperature: 0.7,
+              randomSeed: Math.floor(Math.random() * 1e9),
+              maxNumImages: 4,
+            });
+          } finally {
+            URL.revokeObjectURL(blobUrl);
+          }
+
+        } else if (selectedModel.backend === "transformers") {
           // ── Transformers.js v4 / ONNX Runtime Web path ──
           const fileProgress = new Map();
           const TOTAL_FILE_SIZE = selectedModel.sizeMB * 1e6;
@@ -4142,6 +4544,7 @@
         currentConvId = null;
         updateTokenCount();
         updateSystemPromptAvailability();
+        updateMultimodalUI();
 
       } catch (err) {
         clearInterval(timerInterval);
@@ -4186,10 +4589,20 @@
     window.sendMessage = async function () {
       const input = document.getElementById("userInput");
       const text = input.value.trim();
-      if (!text || isGenerating || (!engine && !tfPipeline)) return;
+      if (!text || isGenerating || (!engine && !tfPipeline && !mpInference)) return;
 
       // Add user message
-      appendMessage("user", text);
+      const userBubble = appendMessage("user", text);
+      // Show attached images/audio in user bubble
+      if (pendingAttachments.length > 0) {
+        for (const att of pendingAttachments) {
+          const img = document.createElement("img");
+          img.src = att.data;
+          img.className = "message-image";
+          img.alt = att.name;
+          userBubble.appendChild(img);
+        }
+      }
       chatHistory.push({ role: "user", content: text });
       input.value = "";
       autoResize(input);
@@ -4260,7 +4673,56 @@
       let tokenCount = 0;
 
       try {
-        if (activeBackend === "transformers" && tfPipeline) {
+        if (activeBackend === "mediapipe" && mpInference) {
+          // ── MediaPipe LLM streaming generation ──
+          const prompt = formatGemmaPrompt(messages);
+          const stopPromise = new Promise(resolve => { stopResolve = resolve; });
+          let stopped = false;
+
+          // Build multimodal input if attachments present
+          let mpInput = prompt;
+          if (pendingAttachments.length > 0) {
+            const parts = [];
+            for (const att of pendingAttachments) {
+              // Create an offscreen image element for MediaPipe
+              const img = new Image();
+              img.src = att.data;
+              await new Promise(r => { img.onload = r; });
+              parts.push({ imageSource: img });
+            }
+            parts.push(prompt);
+            mpInput = parts;
+          }
+
+          const genPromise = new Promise((resolve, reject) => {
+            try {
+              mpInference.generateResponse(mpInput, (chunk, done) => {
+                if (stopped || shouldStop) return;
+                fullResponse += chunk;
+                tokenCount++;
+                bubble.textContent = fullResponse;
+                scrollToBottom();
+                if (done) resolve();
+              });
+            } catch (err) {
+              reject(err);
+            }
+          });
+
+          await Promise.race([genPromise, stopPromise]);
+          stopped = true;
+          stopResolve = null;
+
+          chatHistory.push({ role: "assistant", content: fullResponse });
+          pendingAttachments = [];
+
+          if (!shouldStop) {
+            const elapsed = (performance.now() - startTime) / 1000;
+            const tps = (tokenCount / elapsed).toFixed(1);
+            document.getElementById("tokenInfo").textContent = `${tokenCount} tokens · ${tps} tok/s`;
+          }
+
+        } else if (activeBackend === "transformers" && tfPipeline) {
           // ── Transformers.js streaming generation ──
           generationController = new AbortController();
           const abortSignal = generationController.signal;
@@ -4343,6 +4805,8 @@
       generationController = null;
       isGenerating = false;
       shouldStop = false;
+      pendingAttachments = [];
+      updateAttachmentPreview();
       hideStopButton();
       document.getElementById("sendBtn").disabled = false;
       document.getElementById("userInput").focus();
