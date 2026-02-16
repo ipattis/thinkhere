@@ -2530,8 +2530,8 @@
         name: "Qwen3 0.6B",
         desc: "Lightweight Qwen3 for phones and low-RAM devices. Multilingual chat.",
         tech: "Transformers.js v4 · ONNX Runtime Web · WebGPU · q4f16",
-        size: "~550 MB",
-        sizeMB: 550,
+        size: "~570 MB",
+        sizeMB: 570,
         time: "~30s – 2 min",
         backend: "transformers",
         supportsSystemPrompt: true,
@@ -2834,10 +2834,9 @@
       try {
         const totalSize = 600 * 1e6; // ~600MB approximate
         const fileProgress = new Map();
-        const isIOSEmbed = /iPhone|iPod|iPad/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
         embeddingPipeline = await createPipeline(EMBEDDING_MODEL.task, EMBEDDING_MODEL.id, {
           dtype: "q4",
-          device: isIOSEmbed ? "wasm" : "webgpu",
+          device: "webgpu",
           progress_callback: (p) => {
             if (p.status === "progress" && typeof p.loaded === "number") {
               fileProgress.set(p.file, p.loaded);
@@ -4013,15 +4012,10 @@
         if (selectedModel.backend === "transformers") {
           // ── Transformers.js v4 / ONNX Runtime Web path ──
           const fileProgress = new Map();
-          // iOS (iPhone/iPad) WebGPU is unreliable for ONNX — fall back to WASM with q4 dtype
-          const isIOS = /iPhone|iPod|iPad/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-          const tfDevice = isIOS ? "wasm" : "webgpu";
-          const tfDtype = isIOS ? "q4" : "q4f16";
-          // q4 files are ~1.6x larger than q4f16
-          const TOTAL_FILE_SIZE = (isIOS ? selectedModel.sizeMB * 1.6 : selectedModel.sizeMB) * 1e6;
-          label.textContent = isIOS
-            ? "Loading ONNX model via Transformers.js (WASM)…"
-            : "Loading ONNX model via Transformers.js…";
+          const tfDevice = "webgpu";
+          const tfDtype = "q4f16";
+          const TOTAL_FILE_SIZE = selectedModel.sizeMB * 1e6;
+          label.textContent = "Loading ONNX model via Transformers.js…";
           tfPipeline = await createPipeline("text-generation", selectedModel.id, {
             dtype: tfDtype,
             device: tfDevice,
@@ -4044,8 +4038,8 @@
                 if (currentPhase !== "compile") {
                   currentPhase = "compile";
                   setPhase("compile");
-                  label.textContent = isIOS ? "Initializing ONNX session…" : "Compiling WebGPU shaders…";
-                  tip.textContent = isIOS ? "Setting up the ONNX inference session." : "Setting up the ONNX inference session for your GPU.";
+                  label.textContent = "Compiling WebGPU shaders…";
+                  tip.textContent = "Setting up the ONNX inference session for your GPU.";
                 }
               }
             },
