@@ -343,9 +343,9 @@
       font-family: var(--font-mono);
       font-size: 0.68rem;
       font-weight: 400;
-      color: var(--text-dim);
+      color: var(--accent);
       background: transparent;
-      border: 1px solid var(--border);
+      border: 1px solid var(--accent-dim);
       border-radius: 100px;
       padding: 6px 14px;
       cursor: pointer;
@@ -354,8 +354,9 @@
     }
 
     .change-model-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent-dim);
+      color: var(--text);
+      border-color: var(--accent);
+      background: var(--accent-glow);
     }
 
     .model-card h3 {
@@ -2257,9 +2258,9 @@
     <header>
       <div class="logo">Think<span>Here</span></div>
       <div class="header-right">
-        <a class="header-nav" href="#models">Models</a>
-        <a class="header-nav" href="#architecture">How It Works</a>
-        <button class="change-model-btn" id="changeModelBtn" onclick="showModelSelector()">Change Model</button>
+        <a class="header-nav" href="#models" onclick="navigateToSection('models'); return false;">Models</a>
+        <a class="header-nav" href="#architecture" onclick="navigateToSection('architecture'); return false;">How It Works</a>
+        <button class="change-model-btn" id="backToChatBtn" onclick="backToChat()">Back to Chat</button>
         <div class="header-meta" id="headerStatus"></div>
         <div class="gh-stats">
           <a class="gh-stat" href="https://github.com/ipattis/thinkhere/stargazers" target="_blank"
@@ -4184,13 +4185,34 @@
 
     // ── Show Model Selector ──
     window.showModelSelector = async function () {
-      // Hide chat
+      // Hide chat and loading screen
       document.getElementById("chatContainer").classList.remove("active");
+      document.getElementById("loadingScreen").classList.remove("active");
+      document.getElementById("loadingScreen").style.display = "";
       // Show model selector
       const selector = document.getElementById("modelSelector");
       selector.style.display = "";
+      // Show "Back to Chat" if a model is loaded
+      document.getElementById("backToChatBtn").style.display =
+        (engine || tfPipeline || mpInference) ? "inline-block" : "none";
       // Refresh grid with current cache/active states
       await buildModelGrid();
+    };
+
+    window.navigateToSection = async function (sectionId) {
+      await showModelSelector();
+      // Scroll to the target section after the selector is visible
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+    };
+
+    window.backToChat = function () {
+      if (!engine && !tfPipeline && !mpInference) return;
+      document.getElementById("modelSelector").style.display = "none";
+      document.getElementById("chatContainer").classList.add("active");
+      document.getElementById("userInput").focus();
     };
 
     // ── Unload Model ──
@@ -4211,7 +4233,7 @@
       chatHistory = [];
 
       // Hide change model button, reset header
-      document.getElementById("changeModelBtn").style.display = "none";
+      document.getElementById("backToChatBtn").style.display = "none";
       document.getElementById("headerStatus").textContent = "";
 
       // Refresh the grid
@@ -4555,7 +4577,7 @@
         document.getElementById("chatContainer").classList.add("active");
         document.getElementById("modelLabel").textContent = selectedModel.name;
         document.getElementById("headerStatus").textContent = selectedModel.name;
-        document.getElementById("changeModelBtn").style.display = "inline-block";
+        document.getElementById("backToChatBtn").style.display = "none";
         document.getElementById("sendBtn").disabled = false;
         document.getElementById("userInput").focus();
         currentConvId = null;
