@@ -9,7 +9,7 @@ const AUTH_CONFIG = {
   region: "us-east-1",
 
   // Redirect URIs (must match Cognito App Client settings)
-  signInRedirectUri: "https://thinkhere.ai/callback",
+  signInRedirectUri: "https://thinkhere.ai/",
   signOutRedirectUri: "https://thinkhere.ai/",
 
   // Where authenticated users go
@@ -161,7 +161,7 @@ function getAuthenticatedUser() {
 // ── Init: handle callback or update UI ──
 (function () {
   // If this is a callback from Cognito, handle it
-  if (window.location.pathname === "/callback" || window.location.hash.includes("id_token")) {
+  if (window.location.hash.includes("id_token")) {
     if (handleAuthCallback()) return; // Redirecting to app
   }
 
