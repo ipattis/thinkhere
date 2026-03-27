@@ -5,14 +5,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog — ThinkHere | Private AI in Your Browser</title>
-  <meta name="description" content="News, updates, and technical deep dives from the ThinkHere team. Learn about in-browser AI, WebGPU, and private language models.">
+  <meta name="description"
+    content="News, updates, and technical deep dives from the ThinkHere team. Learn about in-browser AI, WebGPU, and private language models.">
   <meta property="og:title" content="Introducing ThinkHere — Private AI That Runs in Your Browser">
-  <meta property="og:description" content="We built an AI chat tool that runs entirely in your browser. No cloud, no servers, no data collection. Here's why and how.">
+  <meta property="og:description"
+    content="We built an AI chat tool that runs entirely in your browser. No cloud, no servers, no data collection. Here's why and how.">
   <meta property="og:type" content="article">
   <meta name="author" content="ThinkHere Team">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
     /* ── Blog Page Styles ── */
@@ -363,10 +367,12 @@
     <header class="page-header">
       <a class="page-header-logo" href="/">
         <svg width="13" height="15" viewBox="0 0 72 80" fill="none">
-          <circle cx="24" cy="9" r="6" fill="#b85c38"/>
-          <circle cx="48" cy="9" r="6" fill="#b85c38"/>
-          <path d="M 58,52 A 22,22 0 1 0 50,62" stroke="#f4f1eb" stroke-width="6" fill="none" stroke-linecap="round" class="ql-stroke"/>
-          <line x1="50" y1="62" x2="62" y2="76" stroke="#f4f1eb" stroke-width="6" stroke-linecap="round" class="ql-stroke"/>
+          <circle cx="24" cy="9" r="6" fill="#b85c38" />
+          <circle cx="48" cy="9" r="6" fill="#b85c38" />
+          <path d="M 58,52 A 22,22 0 1 0 50,62" stroke="#f4f1eb" stroke-width="6" fill="none" stroke-linecap="round"
+            class="ql-stroke" />
+          <line x1="50" y1="62" x2="62" y2="76" stroke="#f4f1eb" stroke-width="6" stroke-linecap="round"
+            class="ql-stroke" />
         </svg>
         ThinkHere
       </a>
@@ -376,10 +382,18 @@
         <a class="page-nav" href="docs.html">Docs</a>
         <div class="page-theme-toggle">
           <button class="page-theme-btn active" id="btn-dark" onclick="setTheme('dark')">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+              <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            </svg>
           </button>
           <button class="page-theme-btn" id="btn-light" onclick="setTheme('light')">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5.63 5.63l1.41 1.41M16.96 16.96l1.41 1.41M5.63 18.37l1.41-1.41M16.96 7.04l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" />
+              <path
+                d="M12 2v2M12 20v2M2 12h2M20 12h2M5.63 5.63l1.41 1.41M16.96 16.96l1.41 1.41M5.63 18.37l1.41-1.41M16.96 7.04l1.41-1.41"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
           </button>
         </div>
         <a class="btn-top-ghost" href="#" onclick="signIn(); return false;">Sign In</a>
@@ -399,7 +413,9 @@
       <article class="post-card">
         <div class="post-meta">March 2026</div>
         <h2><a href="#post-launch">Introducing ThinkHere &mdash; Private AI That Runs in Your Browser</a></h2>
-        <p class="post-excerpt">We built an AI assistant that runs entirely on your hardware. No cloud servers, no data collection, no API keys. Here is why we think local-first AI matters, and how we made it work with WebGPU and MediaPipe.</p>
+        <p class="post-excerpt">We built an AI assistant that runs entirely on your hardware. No cloud servers, no data
+          collection, no API keys. Here is why we think local-first AI matters, and how we made it work with WebGPU and
+          MediaPipe.</p>
         <a class="read-more" href="#post-launch">Read more &rarr;</a>
       </article>
 
@@ -408,46 +424,80 @@
         <div class="post-meta">March 2026 &middot; 5 min read</div>
         <h1>Introducing ThinkHere &mdash; Private AI That Runs in Your Browser</h1>
 
-        <p>Today we are launching <strong>ThinkHere</strong>, an AI chat application that runs entirely in your web browser. There is no server processing your prompts, no cloud storing your conversations, and no company reading your data. When you use ThinkHere, the language model runs on your own hardware, and your words never leave your device.</p>
+        <p>Today we are launching <strong>ThinkHere</strong>, an AI chat application that runs entirely in your web
+          browser. There is no server processing your prompts, no cloud storing your conversations, and no company
+          reading your data. When you use ThinkHere, the language model runs on your own hardware, and your words never
+          leave your device.</p>
 
-        <p>We believe this is how AI tools should work by default. And thanks to recent advances in browser technology, it is now practical to deliver that experience without asking users to install anything at all.</p>
+        <p>We believe this is how AI tools should work by default. And thanks to recent advances in browser technology,
+          it is now practical to deliver that experience without asking users to install anything at all.</p>
 
         <h2>The privacy problem with cloud AI</h2>
 
-        <p>Most AI chat tools work the same way: you type a prompt, it gets sent to a server, a model generates a response, and the server sends it back. Along the way, your prompt is transmitted over the internet, processed on hardware you do not control, and often stored in logs you cannot access or delete.</p>
+        <p>Most AI chat tools work the same way: you type a prompt, it gets sent to a server, a model generates a
+          response, and the server sends it back. Along the way, your prompt is transmitted over the internet, processed
+          on hardware you do not control, and often stored in logs you cannot access or delete.</p>
 
-        <p>For casual questions, this might feel acceptable. But the moment you ask an AI to help with medical information, legal documents, financial planning, personal journal entries, or proprietary business data, the calculus changes entirely. You are trusting a third party with sensitive information, often without a clear understanding of how that data will be retained, used for training, or shared.</p>
+        <p>For casual questions, this might feel acceptable. But the moment you ask an AI to help with medical
+          information, legal documents, financial planning, personal journal entries, or proprietary business data, the
+          calculus changes entirely. You are trusting a third party with sensitive information, often without a clear
+          understanding of how that data will be retained, used for training, or shared.</p>
 
-        <p>ThinkHere eliminates this tradeoff. <strong>Your prompts and responses never leave the browser tab.</strong> There is no network request carrying your conversation to a remote server. The model weights are downloaded once and cached locally, and every inference operation runs on your device's GPU via WebGPU. If you close the tab, the conversation exists nowhere but in your browser's local storage.</p>
+        <p>ThinkHere eliminates this tradeoff. <strong>Your prompts and responses never leave the browser tab.</strong>
+          There is no network request carrying your conversation to a remote server. The model weights are downloaded
+          once and cached locally, and every inference operation runs on your device's GPU via WebGPU. If you close the
+          tab, the conversation exists nowhere but in your browser's local storage.</p>
 
         <h2>How in-browser AI actually works</h2>
 
-        <p>Running a language model in a browser tab sounds improbable, but the underlying technology is mature and well-supported. ThinkHere is built on two key pieces of infrastructure:</p>
+        <p>Running a language model in a browser tab sounds improbable, but the underlying technology is mature and
+          well-supported. ThinkHere is built on two key pieces of infrastructure:</p>
 
         <ul>
-          <li><strong>WebGPU</strong> is a modern browser API that provides low-level access to the GPU. Unlike WebGL, which was designed for graphics rendering, WebGPU is built for general-purpose compute workloads, including the matrix multiplications that power neural network inference. Chrome, Edge, and Safari all ship with WebGPU support.</li>
-          <li><strong>MediaPipe LLM Inference API</strong> is Google's framework for running large language models on edge devices. It handles model loading, tokenization, context management, and inference scheduling. ThinkHere uses MediaPipe to orchestrate the entire pipeline inside the browser.</li>
+          <li><strong>WebGPU</strong> is a modern browser API that provides low-level access to the GPU. Unlike WebGL,
+            which was designed for graphics rendering, WebGPU is built for general-purpose compute workloads, including
+            the matrix multiplications that power neural network inference. Chrome, Edge, and Safari all ship with
+            WebGPU support.</li>
+          <li><strong>MediaPipe LLM Inference API</strong> is Google's framework for running large language models on
+            edge devices. It handles model loading, tokenization, context management, and inference scheduling.
+            ThinkHere uses MediaPipe to orchestrate the entire pipeline inside the browser.</li>
         </ul>
 
-        <p>When you first load a model in ThinkHere, the browser downloads the model weights (typically 1 to 3 GB depending on the model). These weights are stored in the browser's Cache Storage API, so you only download them once. On subsequent visits, the model loads from the local cache in a matter of seconds. From there, MediaPipe compiles the model for your specific GPU using WebGPU shader compilation, and inference runs natively on your hardware.</p>
+        <p>When you first load a model in ThinkHere, the browser downloads the model weights (typically 1 to 3 GB
+          depending on the model). These weights are stored in the browser's Cache Storage API, so you only download
+          them once. On subsequent visits, the model loads from the local cache in a matter of seconds. From there,
+          MediaPipe compiles the model for your specific GPU using WebGPU shader compilation, and inference runs
+          natively on your hardware.</p>
 
         <div class="highlight">
-          Download weights &rarr; Cache locally &rarr; Compile for your GPU &rarr; Run inference &rarr; Output stays on device
+          Download weights &rarr; Cache locally &rarr; Compile for your GPU &rarr; Run inference &rarr; Output stays on
+          device
         </div>
 
-        <p>The result is a fully functional AI assistant running in a browser tab, with generation speeds that are practical for real conversations. On a modern laptop with a discrete or integrated GPU, you can expect anywhere from 10 to 30+ tokens per second depending on the model and hardware.</p>
+        <p>The result is a fully functional AI assistant running in a browser tab, with generation speeds that are
+          practical for real conversations. On a modern laptop with a discrete or integrated GPU, you can expect
+          anywhere from 10 to 30+ tokens per second depending on the model and hardware.</p>
 
         <h2>The tier system</h2>
 
-        <p>ThinkHere is free to use, and we want to keep it that way for the core experience. Here is how our tiers work:</p>
+        <p>ThinkHere is free to use, and we want to keep it that way for the core experience. Here is how our tiers
+          work:</p>
 
         <ul>
-          <li><strong>Free (no account required):</strong> You can load and chat with Gemma 3n E2B immediately, with no sign-up. This is a capable, multimodal model that supports image input. You get a clean chat interface with no strings attached.</li>
-          <li><strong>Logged in (free account):</strong> Creating a free account unlocks the full model library (nine models and growing), system prompts, temperature and generation controls, conversation history, export, knowledge base with RAG, and file upload as context. The account is free and always will be.</li>
-          <li><strong>Paid (coming soon):</strong> We are designing a paid tier that will include priority support and premium features as we develop them. Details will be announced when it is ready.</li>
+          <li><strong>Free (no account required):</strong> You can load and chat with Gemma 3n E2B immediately, with no
+            sign-up. This is a capable, multimodal model that supports image input. You get a clean chat interface with
+            no strings attached.</li>
+          <li><strong>Logged in (free account):</strong> Creating a free account unlocks the full model library (nine
+            models and growing), system prompts, temperature and generation controls, conversation history, export,
+            knowledge base with RAG, and file upload as context. The account is free and always will be.</li>
+          <li><strong>Paid (coming soon):</strong> We are designing a paid tier that will include priority support,
+            voice transcription, and premium features as we develop them. Details will be announced when it is ready.
+          </li>
         </ul>
 
-        <p>Importantly, <strong>all tiers run the model locally in your browser</strong>. The account system manages preferences, settings, and feature access, but the core AI inference is always happening on your hardware. We never see your conversations regardless of which tier you are on.</p>
+        <p>Importantly, <strong>all tiers run the model locally in your browser</strong>. The account system manages
+          preferences, settings, and feature access, but the core AI inference is always happening on your hardware. We
+          never see your conversations regardless of which tier you are on.</p>
 
         <h2>Device requirements</h2>
 
@@ -461,13 +511,19 @@
           <li><strong>iPad:</strong> M-series iPads may work, though the experience varies</li>
         </ul>
 
-        <p>We are actively working to expand device support as browser capabilities and model efficiency improve. The trend is in our direction: models are getting smaller and more efficient, and WebGPU support is spreading to more devices.</p>
+        <p>We are actively working to expand device support as browser capabilities and model efficiency improve. The
+          trend is in our direction: models are getting smaller and more efficient, and WebGPU support is spreading to
+          more devices.</p>
 
         <h2>What comes next</h2>
 
-        <p>ThinkHere is open source under the MIT license, and we are building it in the open. Our near-term roadmap includes expanding the model library, improving generation speed, adding more document and context features for the logged-in tier, and designing the paid tier based on community feedback.</p>
+        <p>ThinkHere is open source under the MIT license, and we are building it in the open. Our near-term roadmap
+          includes expanding the model library, improving generation speed, adding more document and context features
+          for the logged-in tier, and designing the paid tier based on community feedback.</p>
 
-        <p>We think private, local-first AI is not a niche preference but an inevitability. As models become more capable at smaller sizes, and as hardware acceleration in browsers continues to mature, running AI on your own device will be the default, not the exception. ThinkHere is our bet on that future.</p>
+        <p>We think private, local-first AI is not a niche preference but an inevitability. As models become more
+          capable at smaller sizes, and as hardware acceleration in browsers continues to mature, running AI on your own
+          device will be the default, not the exception. ThinkHere is our bet on that future.</p>
 
         <div class="post-cta">
           <p>Ready to try private AI that runs in your browser?</p>
@@ -492,10 +548,10 @@
       document.getElementById('btn-dark').classList.toggle('active', t === 'dark');
       document.getElementById('btn-light').classList.toggle('active', t === 'light');
       var strokeCol = t === 'light' ? '#9a9a9a' : '#f4f1eb';
-      document.querySelectorAll('.ql-stroke').forEach(function(el) { el.setAttribute('stroke', strokeCol); });
+      document.querySelectorAll('.ql-stroke').forEach(function (el) { el.setAttribute('stroke', strokeCol); });
       localStorage.setItem('thinkhere-theme', t);
     }
-    (function() {
+    (function () {
       var saved = localStorage.getItem('thinkhere-theme');
       if (saved) setTheme(saved);
     })();
