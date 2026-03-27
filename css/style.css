@@ -659,6 +659,7 @@ a.logo-product:hover {
   font-weight: 600;
   color: var(--text);
   margin-bottom: 3px;
+  text-align: left;
 }
 
 .p-desc {
