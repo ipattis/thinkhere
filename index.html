@@ -58,7 +58,6 @@
             Confidential
           </div>
         </div>
-        <a class="btn-login" id="sidebarSignInBtn" href="#" onclick="signIn(); return false;">Log in to ThinkHere</a>
       </div>
     </aside>
 
@@ -118,7 +117,8 @@
             Qanata Labs &middot; Privacy-First AI
           </div>
           <h2>Run AI <em>entirely</em> in your browser</h2>
-          <p>No servers, no API keys, no data leaves your device. Powered by Gemma 3n and WebGPU — everything runs locally on your hardware.</p>
+          <p class="intro-subtitle">No data leaves your device</p>
+          <p>No servers, no API keys. Powered by Gemma 3n and WebGPU — everything runs locally on your hardware.</p>
 
           <div id="webgpuCheck"></div>
           <div id="deviceInfoBar"></div>
@@ -126,6 +126,38 @@
 
           <button class="start-btn" id="startBtn" onclick="loadModel()">Load Gemma 3n E2B &amp; Start Chatting</button>
           <p style="font-size: 0.75rem; color: var(--text-dim); max-width: 400px;">First load downloads ~3 GB of model weights. After that, the model loads from cache in seconds.</p>
+
+          <div class="pillar-row">
+            <div class="pillar">
+              <div class="p-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <span class="p-title">Secure</span>
+                <span class="p-desc">Runs on your device. No external servers involved.</span>
+              </div>
+            </div>
+            <div class="pillar-sep"></div>
+            <div class="pillar">
+              <div class="p-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 118 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <span class="p-title">Private</span>
+                <span class="p-desc">Your words stay yours. Nothing is stored or tracked.</span>
+              </div>
+            </div>
+            <div class="pillar-sep"></div>
+            <div class="pillar">
+              <div class="p-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <span class="p-title">Confidential</span>
+                <span class="p-desc">Your documents and ideas never leave your hands.</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Loading Screen -->

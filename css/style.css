@@ -604,6 +604,71 @@ a.logo-product:hover {
   transform: none;
 }
 
+.intro-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: -10px;
+}
+
+.pillar-row {
+  display: flex;
+  width: 100%;
+  max-width: 560px;
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 14px var(--shadow);
+  margin-top: 4px;
+}
+
+.pillar {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 16px 14px;
+}
+
+.pillar-sep {
+  width: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+  margin: 12px 0;
+}
+
+.p-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(184,92,56,0.1);
+  color: #b85c38;
+  margin-top: 1px;
+}
+
+.p-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.p-desc {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  text-align: left;
+}
+
 /* ── Device Banners ── */
 .device-info-bar {
   display: flex;
