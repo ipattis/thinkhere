@@ -436,32 +436,61 @@ async function getMediaPipeCachedBlob(modelFile) {
 
 async function downloadMediaPipeModel(hfRepo, modelFile, onProgress) {
   const url = `https://huggingface.co/${hfRepo}/resolve/main/${modelFile}`;
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Download failed: ${resp.status} ${resp.statusText}`);
+  const MAX_RETRIES = 3;
+  const BASE_DELAY_MS = 2000;
 
-  const contentLength = parseInt(resp.headers.get("content-length") || "0", 10);
-  const reader = resp.body.getReader();
-  const chunks = [];
-  let loaded = 0;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const resp = await fetch(url);
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-    loaded += value.length;
-    if (onProgress && contentLength > 0) {
-      onProgress(loaded, contentLength);
+      // Non-retryable HTTP errors (client errors like 403, 404)
+      if (!resp.ok && resp.status >= 400 && resp.status < 500) {
+        const err = new Error(`Download failed: ${resp.status} ${resp.statusText}`);
+        err.httpStatus = resp.status;
+        throw err;
+      }
+      // Retryable HTTP errors (5xx server errors)
+      if (!resp.ok) {
+        throw new Error(`Download failed: ${resp.status} ${resp.statusText}`);
+      }
+
+      const contentLength = parseInt(resp.headers.get("content-length") || "0", 10);
+      const reader = resp.body.getReader();
+      const chunks = [];
+      let loaded = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        loaded += value.length;
+        if (onProgress && contentLength > 0) {
+          onProgress(loaded, contentLength);
+        }
+      }
+
+      const blob = new Blob(chunks);
+
+      try {
+        const cache = await caches.open(MEDIAPIPE_CACHE_NAME);
+        await cache.put(mediapipeCacheKey(modelFile), new Response(blob.slice(0)));
+      } catch (e) { console.warn("MediaPipe cache store failed:", e); }
+
+      return blob;
+    } catch (err) {
+      // Don't retry client errors (403, 404, CORS blocks)
+      if (err.httpStatus && err.httpStatus >= 400 && err.httpStatus < 500) throw err;
+
+      // Last attempt — give up
+      if (attempt === MAX_RETRIES) throw err;
+
+      // Wait with exponential backoff before retrying
+      const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+      console.warn(`Download attempt ${attempt} failed, retrying in ${delay}ms...`, err.message);
+      if (onProgress) onProgress(-1, -1); // signal retry to UI
+      await new Promise(r => setTimeout(r, delay));
     }
   }
-
-  const blob = new Blob(chunks);
-
-  try {
-    const cache = await caches.open(MEDIAPIPE_CACHE_NAME);
-    await cache.put(mediapipeCacheKey(modelFile), new Response(blob.slice(0)));
-  } catch (e) { console.warn("MediaPipe cache store failed:", e); }
-
-  return blob;
 }
 
 // ── Gemma Prompt Formatter ──
@@ -608,6 +637,12 @@ window.loadModel = async function () {
     } else {
       label.textContent = `Downloading ${MODEL.modelFile}...`;
       blob = await downloadMediaPipeModel(MODEL.hfRepo, MODEL.modelFile, (loaded, total) => {
+        if (loaded === -1 && total === -1) {
+          // Retry signal
+          label.textContent = "Retrying download...";
+          tip.textContent = "Connection interrupted — retrying automatically.";
+          return;
+        }
         const pct = Math.min(99, Math.round((loaded / total) * 100));
         bar.style.width = `${pct}%`;
         statProgress.textContent = `${pct}%`;
@@ -666,30 +701,61 @@ window.loadModel = async function () {
     console.error(err);
 
     const msg = (err.message || "").toLowerCase();
-    const isNetworkError = msg.includes("failed to fetch") || msg.includes("cors") || msg.includes("403") || msg.includes("network") || msg.includes("blocked");
+    const isBlocked = msg.includes("403") || msg.includes("cors");
+    const isNetworkError = msg.includes("failed to fetch") || msg.includes("network") || msg.includes("blocked") || msg.includes("timeout") || msg.includes("abort");
 
-    if (isNetworkError) {
+    tip.textContent = "";
+    const errorDiv = document.createElement("div");
+    errorDiv.className = "network-error";
+
+    // Remove any previous error divs
+    loadScreen.querySelectorAll(".network-error").forEach(el => el.remove());
+
+    if (isBlocked) {
+      // Likely a corporate firewall or policy block
       label.textContent = "Network error — unable to download model";
-      tip.textContent = "";
-      const errorDiv = document.createElement("div");
-      errorDiv.className = "network-error";
       errorDiv.innerHTML = `
         <strong>Blocked by network policy</strong>
-        Model weights are hosted on Hugging Face and could not be reached.
-        <br><br>
-        Ask your IT team to allow access to:
+        Model weights could not be reached. If you're on a managed network, ask your IT team to allow access to:
         <ul>
           <li><code>huggingface.co</code> — model weights</li>
-          <li><code>cdn.jsdelivr.net</code> — MediaPipe runtime</li>
+          <li><code>cdn.jsdelivr.net</code> — runtime libraries</li>
+          <li><code>esm.run</code> — ES module CDN</li>
         </ul>
+        <a href="javascript:void(0)" onclick="loadModel()" style="color: var(--accent); text-decoration: underline;">Retry</a>
+        &nbsp;·&nbsp;
         <a href="/" style="color: var(--accent); text-decoration: underline;">Reload page</a>
       `;
-      loadScreen.appendChild(errorDiv);
+    } else if (isNetworkError) {
+      // Transient network failure (timeout, connection reset, slow network)
+      label.textContent = "Download interrupted";
+      errorDiv.innerHTML = `
+        <strong>Download didn't complete</strong>
+        The model is ~3 GB and the download was interrupted. This can happen on slower or unstable connections.
+        <br><br>
+        <strong>Things to try:</strong>
+        <ul>
+          <li>Check your internet connection</li>
+          <li>Try again — downloads resume from cache when possible</li>
+          <li>Use a wired connection if on Wi-Fi</li>
+        </ul>
+        <a href="javascript:void(0)" onclick="loadModel()" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Retry download</a>
+        &nbsp;·&nbsp;
+        <a href="/" style="color: var(--accent); text-decoration: underline;">Reload page</a>
+      `;
     } else {
+      // Unknown error (WebGPU compilation failure, etc.)
       label.textContent = `Error: ${err.message}`;
-      tip.textContent = "";
-      tip.innerHTML = `Something went wrong. Try refreshing the page. <a href="/" style="color: var(--accent); text-decoration: underline;">Reload</a>`;
+      errorDiv.innerHTML = `
+        <strong>Something went wrong</strong>
+        <br>${err.message}<br><br>
+        <a href="javascript:void(0)" onclick="loadModel()" style="color: var(--accent); text-decoration: underline;">Retry</a>
+        &nbsp;·&nbsp;
+        <a href="/" style="color: var(--accent); text-decoration: underline;">Reload page</a>
+      `;
     }
+
+    loadScreen.appendChild(errorDiv);
   }
 };
 
@@ -1034,7 +1100,7 @@ fetch("https://api.github.com/repos/ipattis/thinkhere")
     if (data.stargazers_count != null) document.getElementById("ghStars").textContent = fmt(data.stargazers_count);
     if (data.forks_count != null) document.getElementById("ghForks").textContent = fmt(data.forks_count);
   })
-  .catch(() => {});
+  .catch(() => { });
 
 // ── Init ──
 (async () => {
