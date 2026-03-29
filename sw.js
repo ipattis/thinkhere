@@ -12,12 +12,39 @@ self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
 // Handle download requests from main thread
 self.addEventListener("message", (e) => {
-    if (e.data && e.data.type === "download-model") {
+    if (!e.data) return;
+    if (e.data.type === "download-model") {
         const { url, modelFile } = e.data;
         const clientId = e.source?.id;
         handleDownload(url, modelFile, clientId);
+    } else if (e.data.type === "clear-storage") {
+        handleClearStorage(e.source?.id);
     }
 });
+
+// Intercept fetch requests for cached model files (avoids blob URL double-memory)
+self.addEventListener("fetch", (e) => {
+    const url = e.request.url;
+    if (url.startsWith("https://thinkhere.local/mediapipe/")) {
+        e.respondWith(
+            caches.open(CACHE_NAME).then(async (cache) => {
+                const cached = await cache.match(url);
+                if (cached) return cached;
+                return new Response("Model not found in cache", { status: 404 });
+            })
+        );
+    }
+});
+
+// Clear all cached model data
+async function handleClearStorage(clientId) {
+    try {
+        await caches.delete(CACHE_NAME);
+        await postToClient(clientId, { type: "storage-cleared", success: true });
+    } catch (err) {
+        await postToClient(clientId, { type: "storage-cleared", success: false, error: err.message });
+    }
+}
 
 async function postToClient(clientId, msg) {
     try {

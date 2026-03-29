@@ -741,15 +741,39 @@ window.loadModel = async function () {
     label.textContent = "Initializing MediaPipe LLM engine...";
     tip.textContent = "Creating inference session — this may take a moment.";
 
-    // Use blob URL — blobs are chunked internally, unlike ArrayBuffer which
-    // requires contiguous memory and fails with NotReadableError on 3GB+ files
-    const blobUrl = URL.createObjectURL(blob);
-    blob = null; // drop reference so GC can reclaim during init
+    // Show memory requirements
+    const memInfo = document.getElementById("memoryInfo");
+    if (memInfo) {
+      const modelGB = (MODEL.sizeMB / 1000).toFixed(1);
+      const neededGB = (MODEL.sizeMB * 2 / 1000).toFixed(1);
+      const ramGB = deviceProfile ? deviceProfile.deviceRAM_GB : "unknown";
+      memInfo.innerHTML = `<span class="mem-label">Memory needed:</span> ~${neededGB} GB (${modelGB} GB model + inference engine)` +
+        (ramGB !== "unknown" ? ` · <span class="mem-label">Device RAM:</span> ~${ramGB} GB` : "");
+      memInfo.style.display = "block";
+    }
+
+    // Prefer SW-served cache URL to avoid double-memory from blob URLs.
+    // The SW intercepts fetches to thinkhere.local/mediapipe/* and serves
+    // directly from Cache API — zero-copy, no blob intermediary.
+    const sw = navigator.serviceWorker?.controller;
+    let modelAssetPath;
+    let blobUrl = null;
+
+    if (sw) {
+      // SW will serve from cache — drop the blob to free memory
+      blob = null;
+      modelAssetPath = mediapipeCacheKey(MODEL.modelFile);
+    } else {
+      // No SW available — fall back to blob URL
+      blobUrl = URL.createObjectURL(blob);
+      blob = null;
+      modelAssetPath = blobUrl;
+    }
 
     try {
       const genai = await FilesetResolver.forGenAiTasks(MEDIAPIPE_WASM_PATH);
       mpInference = await LlmInference.createFromOptions(genai, {
-        baseOptions: { modelAssetPath: blobUrl },
+        baseOptions: { modelAssetPath },
         maxTokens: 4096,
         topK: 40,
         temperature: 0.7,
@@ -757,7 +781,7 @@ window.loadModel = async function () {
         maxNumImages: 4,
       });
     } finally {
-      URL.revokeObjectURL(blobUrl);
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
     }
 
     // Done
@@ -835,24 +859,76 @@ window.loadModel = async function () {
       `;
     } else {
       label.textContent = "Model failed to initialize";
+      const modelGB = (MODEL.sizeMB / 1000).toFixed(1);
+      const neededGB = (MODEL.sizeMB * 2 / 1000).toFixed(1);
+      const ramGB = deviceProfile ? deviceProfile.deviceRAM_GB : null;
+      const ramNote = ramGB ? ` Your device reports ~${ramGB} GB RAM.` : "";
       errorDiv.innerHTML = `
         <strong>Couldn't start the model</strong>
         <br>The model downloaded successfully but failed during initialization.
-        <br><br>${err.message}<br><br>
+        <br><br><code style="font-size: 0.8em; opacity: 0.7;">${escapeHtml(err.message)}</code><br><br>
+        <div class="mem-requirement">
+          <strong>Memory required:</strong> ~${neededGB} GB (${modelGB} GB model + inference engine).${ramNote}
+        </div>
         <strong>Things to try:</strong>
         <ul>
-          <li>Reload the page and try again</li>
           <li>Close other tabs to free up memory</li>
+          <li>Click <strong>Free memory &amp; retry</strong> below to clear cached data and try again</li>
           <li>Make sure your browser supports WebGPU (Chrome 113+, Edge 113+, Safari 18+)</li>
         </ul>
+        <a href="javascript:void(0)" onclick="freeMemoryAndRetry()" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Free memory &amp; retry</a>
+        &nbsp;·&nbsp;
         <a href="javascript:void(0)" onclick="loadModel()" style="color: var(--accent); text-decoration: underline;">Retry</a>
-        &nbsp;\u00b7&nbsp;
+        &nbsp;·&nbsp;
         <a href="/" style="color: var(--accent); text-decoration: underline;">Reload page</a>
       `;
     }
 
     loadScreen.appendChild(errorDiv);
   }
+};
+
+// ── Free Memory & Retry ──
+window.freeMemoryAndRetry = async function () {
+  const loadScreen = document.getElementById("loadingScreen");
+  const label = document.getElementById("loadingLabel");
+  const bar = document.getElementById("progressBar");
+  const tip = document.getElementById("loadingTip");
+  const memInfo = document.getElementById("memoryInfo");
+
+  // Reset UI
+  if (label) label.textContent = "Freeing memory...";
+  if (bar) { bar.style.width = "0%"; bar.style.background = ""; }
+  if (tip) tip.textContent = "Clearing cached model data and freeing browser memory.";
+  if (memInfo) memInfo.style.display = "none";
+  if (loadScreen) loadScreen.querySelectorAll(".network-error").forEach(el => el.remove());
+
+  // Release inference engine
+  if (mpInference) {
+    try { mpInference.close?.(); } catch (e) { /* ignore */ }
+    mpInference = null;
+  }
+
+  // Clear model cache
+  try {
+    await caches.delete(MEDIAPIPE_CACHE_NAME);
+    console.log("Model cache cleared.");
+  } catch (e) {
+    console.warn("Failed to clear cache:", e);
+  }
+
+  // Ask SW to clear its cache too
+  const sw = navigator.serviceWorker?.controller;
+  if (sw) {
+    sw.postMessage({ type: "clear-storage" });
+  }
+
+  // Brief pause to let GC reclaim
+  if (label) label.textContent = "Memory freed — reloading model...";
+  await new Promise(r => setTimeout(r, 1500));
+
+  // Retry
+  loadModel();
 };
 
 // ── Send Message ──
