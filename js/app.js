@@ -649,7 +649,11 @@ window.loadModel = async function () {
         label.textContent = `Downloading model... ${pct}%`;
         statSize.textContent = `${(loaded / 1e9).toFixed(1)} / ${(total / 1e9).toFixed(1)} GB`;
       });
+      bar.style.width = "100%";
+      statProgress.textContent = "100%";
     }
+
+    let downloadSucceeded = true;
 
     // Compile phase
     setPhase("compile");
@@ -701,8 +705,11 @@ window.loadModel = async function () {
     console.error(err);
 
     const msg = (err.message || "").toLowerCase();
-    const isBlocked = msg.includes("403") || msg.includes("cors");
-    const isNetworkError = msg.includes("failed to fetch") || msg.includes("network") || msg.includes("blocked") || msg.includes("timeout") || msg.includes("abort");
+
+    // Only classify as network/blocked if the download itself failed
+    const isDownloadError = typeof downloadSucceeded === "undefined" || !downloadSucceeded;
+    const isBlocked = isDownloadError && (msg.includes("403") || msg.includes("cors"));
+    const isNetworkError = isDownloadError && (msg.includes("failed to fetch") || msg.includes("network") || msg.includes("blocked") || msg.includes("timeout") || msg.includes("abort"));
 
     tip.textContent = "";
     const errorDiv = document.createElement("div");
@@ -712,22 +719,20 @@ window.loadModel = async function () {
     loadScreen.querySelectorAll(".network-error").forEach(el => el.remove());
 
     if (isBlocked) {
-      // Likely a corporate firewall or policy block
-      label.textContent = "Network error — unable to download model";
+      label.textContent = "Network error \u2014 unable to download model";
       errorDiv.innerHTML = `
         <strong>Blocked by network policy</strong>
         Model weights could not be reached. If you're on a managed network, ask your IT team to allow access to:
         <ul>
-          <li><code>huggingface.co</code> — model weights</li>
-          <li><code>cdn.jsdelivr.net</code> — runtime libraries</li>
-          <li><code>esm.run</code> — ES module CDN</li>
+          <li><code>huggingface.co</code> \u2014 model weights</li>
+          <li><code>cdn.jsdelivr.net</code> \u2014 runtime libraries</li>
+          <li><code>esm.run</code> \u2014 ES module CDN</li>
         </ul>
         <a href="javascript:void(0)" onclick="loadModel()" style="color: var(--accent); text-decoration: underline;">Retry</a>
-        &nbsp;·&nbsp;
+        &nbsp;\u00b7&nbsp;
         <a href="/" style="color: var(--accent); text-decoration: underline;">Reload page</a>
       `;
     } else if (isNetworkError) {
-      // Transient network failure (timeout, connection reset, slow network)
       label.textContent = "Download interrupted";
       errorDiv.innerHTML = `
         <strong>Download didn't complete</strong>
@@ -736,21 +741,27 @@ window.loadModel = async function () {
         <strong>Things to try:</strong>
         <ul>
           <li>Check your internet connection</li>
-          <li>Try again — downloads resume from cache when possible</li>
+          <li>Try again \u2014 downloads resume from cache when possible</li>
           <li>Use a wired connection if on Wi-Fi</li>
         </ul>
         <a href="javascript:void(0)" onclick="loadModel()" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Retry download</a>
-        &nbsp;·&nbsp;
+        &nbsp;\u00b7&nbsp;
         <a href="/" style="color: var(--accent); text-decoration: underline;">Reload page</a>
       `;
     } else {
-      // Unknown error (WebGPU compilation failure, etc.)
-      label.textContent = `Error: ${err.message}`;
+      label.textContent = "Model failed to initialize";
       errorDiv.innerHTML = `
-        <strong>Something went wrong</strong>
-        <br>${err.message}<br><br>
+        <strong>Couldn't start the model</strong>
+        <br>The model downloaded successfully but failed during initialization.
+        <br><br>${err.message}<br><br>
+        <strong>Things to try:</strong>
+        <ul>
+          <li>Reload the page and try again</li>
+          <li>Close other tabs to free up memory</li>
+          <li>Make sure your browser supports WebGPU (Chrome 113+, Edge 113+, Safari 18+)</li>
+        </ul>
         <a href="javascript:void(0)" onclick="loadModel()" style="color: var(--accent); text-decoration: underline;">Retry</a>
-        &nbsp;·&nbsp;
+        &nbsp;\u00b7&nbsp;
         <a href="/" style="color: var(--accent); text-decoration: underline;">Reload page</a>
       `;
     }
