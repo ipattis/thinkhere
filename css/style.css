@@ -274,6 +274,7 @@ a.logo-product:hover {
   margin-right: 0;
   flex-shrink: 0;
   align-self: flex-start;
+  width: fit-content;
 }
 
 .footer-note {
