@@ -930,13 +930,14 @@ fetch("https://api.github.com/repos/ipattis/thinkhere")
   // Show iPhone banner if needed
   if (deviceProfile.isIPhone) {
     showIPhoneBanner();
-    document.getElementById("startBtn").disabled = true;
+    const cta = document.getElementById("introChatCta");
+    if (cta) { cta.style.pointerEvents = "none"; cta.style.opacity = "0.4"; }
     return;
   }
 
-  // Disable start button if no WebGPU
+  // Disable start CTA if no WebGPU
   if (!hasWebGPU) {
-    const btn = document.getElementById("startBtn");
-    if (btn) btn.disabled = true;
+    const cta = document.getElementById("introChatCta");
+    if (cta) { cta.style.pointerEvents = "none"; cta.style.opacity = "0.4"; }
   }
 })();

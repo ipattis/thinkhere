@@ -139,9 +139,24 @@
           <div id="deviceInfoBar"></div>
           <div id="deviceBanners"></div>
 
-          <button class="start-btn" id="startBtn" onclick="loadModel()">Load SmolLM2 1.7B &amp; Start Chatting</button>
-          <p style="font-size: 0.75rem; color: var(--text-dim); max-width: 400px;">First load downloads ~1 GB of model
-            weights. After that, the model loads from cache in seconds.</p>
+          <div class="intro-chat-cta" id="introChatCta" onclick="loadModel()">
+            <div class="intro-chat-input">
+              <svg class="intro-chat-clip" viewBox="0 0 24 24">
+                <path
+                  d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5V6H9v9.5a3 3 0 006 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z" />
+              </svg>
+              <span class="intro-chat-placeholder">Start here...</span>
+              <div class="intro-chat-send">
+                <svg viewBox="0 0 24 24">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+              </div>
+            </div>
+            <div class="intro-chat-meta">
+              <span>SmolLM2 1.7B</span>
+              <span style="color: var(--text-dim);">First load downloads ~1 GB · Then loads from cache in seconds</span>
+            </div>
+          </div>
 
           <div class="pillar-row">
             <div class="pillar">

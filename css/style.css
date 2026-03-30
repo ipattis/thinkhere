@@ -615,30 +615,81 @@ a.logo-product:hover {
   animation: pulse 2.2s ease infinite;
 }
 
-.intro-section .start-btn {
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  font-weight: 600;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 100px;
-  padding: 14px 40px;
+/* ── Intro Chat CTA ── */
+.intro-chat-cta {
+  width: 100%;
+  max-width: 560px;
+  margin-top: 12px;
   cursor: pointer;
-  letter-spacing: 0.02em;
-  transition: all 0.2s ease;
-  margin-top: 8px;
+  transition: transform 0.15s ease;
 }
 
-.intro-section .start-btn:hover {
+.intro-chat-cta:hover {
+  transform: translateY(-2px);
+}
+
+.intro-chat-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  border-radius: 14px;
+  padding: 14px 14px 14px 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.intro-chat-cta:hover .intro-chat-input {
+  border-color: var(--border-hi);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.intro-chat-clip {
+  width: 20px;
+  height: 20px;
+  fill: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.intro-chat-placeholder {
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  user-select: none;
+}
+
+.intro-chat-send {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.intro-chat-cta:hover .intro-chat-send {
   background: #d4724e;
-  transform: translateY(-1px);
 }
 
-.intro-section .start-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
+.intro-chat-send svg {
+  width: 16px;
+  height: 16px;
+  fill: #fff;
+}
+
+.intro-chat-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
 
 .intro-subtitle {
