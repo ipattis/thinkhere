@@ -323,7 +323,296 @@
         </div>
 
 
-        <section class="doc-section" id="getting-started">
+                <section class="doc-section" id="quick-start">
+          <h2>Getting Started</h2>
+          <p>ThinkHere runs entirely in your browser. There is nothing to install and no account is required to start
+            chatting.</p>
+
+          <h3>No account</h3>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">Step 1</div>
+              <div class="step-text">Open <a href="/"
+                  style="color: var(--accent); text-decoration: none;">thinkhere.ai</a> in a supported browser</div>
+            </div>
+            <div class="step">
+              <div class="step-num">Step 2</div>
+              <div class="step-text">Click <strong>Load Model</strong> to download and initialize SmolLM2 1.7B</div>
+            </div>
+            <div class="step">
+              <div class="step-num">Step 3</div>
+              <div class="step-text">Start chatting &mdash; everything runs locally on your device</div>
+            </div>
+          </div>
+
+          <h3>With a free account</h3>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">Step 1</div>
+              <div class="step-text">Create a free account at <a href="https://app.thinkhere.ai"
+                  style="color: var(--accent); text-decoration: none;">app.thinkhere.ai</a></div>
+            </div>
+            <div class="step">
+              <div class="step-num">Step 2</div>
+              <div class="step-text">Choose from 8 models and click <strong>Load</strong></div>
+            </div>
+            <div class="step">
+              <div class="step-num">Step 3</div>
+              <div class="step-text">Conversations are saved automatically and can be exported</div>
+            </div>
+          </div>
+
+          <p>The first load downloads model weights (250 MB&ndash;4 GB depending on the model). After that, the model
+            loads from your browser's cache in seconds.</p>
+        </section>
+
+        <section class="doc-section" id="quick-tiers">
+          <h2>Feature Tiers</h2>
+          <p>ThinkHere offers three tiers. All tiers run the model locally in your browser &mdash; your conversations
+            never leave your device.</p>
+
+          <div class="tier-table-wrap">
+            <table class="tier-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Free</th>
+                  <th>Logged In</th>
+                  <th>Pro</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="feature-name">Text model (SmolLM2 1.7B)</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">File &amp; PDF upload as context</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Conversation history &amp; saving</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">All 8 models</td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Conversation export</td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Long conversation memory <br><span
+                      style="font-weight:400; font-size:0.75rem; color:var(--text-dim);">Context compression</span></td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Custom instructions <br><span
+                      style="font-weight:400; font-size:0.75rem; color:var(--text-dim);">System prompts</span></td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Creativity settings <br><span
+                      style="font-weight:400; font-size:0.75rem; color:var(--text-dim);">Temperature &amp; generation
+                      controls</span></td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">File-powered answers <br><span
+                      style="font-weight:400; font-size:0.75rem; color:var(--text-dim);">Knowledge base / RAG</span>
+                  </td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Voice transcription</td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="check">&#10003;</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="doc-section" id="quick-devices">
+          <h2>Chat Models</h2>
+          <p>The free tier on thinkhere.ai includes SmolLM2 1.7B. All 8 models are available with a free account at <a
+              href="https://app.thinkhere.ai" style="color: var(--accent); text-decoration: none;">app.thinkhere.ai</a>.
+          </p>
+
+          <div class="models-table-wrap">
+            <table class="models-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Family</th>
+                  <th>Runtime</th>
+                  <th>Size</th>
+                  <th>Multi-modal</th>
+                  <th>Tier</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="model-name">SmolLM2 1.7B</td>
+                  <td>SmolLM</td>
+                  <td>WebLLM</td>
+                  <td>~1 GB</td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td><span class="tag free">Free</span></td>
+                </tr>
+                <tr>
+                  <td class="model-name">Qwen3.5 0.8B</td>
+                  <td>Qwen</td>
+                  <td>Transformers.js</td>
+                  <td>~600 MB</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td>Logged In</td>
+                </tr>
+                <tr>
+                  <td class="model-name">Qwen3.5 2B</td>
+                  <td>Qwen</td>
+                  <td>Transformers.js</td>
+                  <td>~1.5 GB</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td>Logged In</td>
+                </tr>
+                <tr>
+                  <td class="model-name">Qwen3.5 4B</td>
+                  <td>Qwen</td>
+                  <td>Transformers.js</td>
+                  <td>~2.9 GB</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td>Logged In</td>
+                </tr>
+                <tr>
+                  <td class="model-name">Mistral 7B</td>
+                  <td>Mistral AI</td>
+                  <td>WebLLM</td>
+                  <td>~3.8 GB</td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td>Logged In</td>
+                </tr>
+                <tr>
+                  <td class="model-name">Llama 3.2 1B</td>
+                  <td>Llama</td>
+                  <td>WebLLM</td>
+                  <td>~700 MB</td>
+                  <td><span class="dash">&mdash;</span></td>
+                  <td>Logged In</td>
+                </tr>
+                <tr>
+                  <td class="model-name">Gemma 3n E2B</td>
+                  <td>Gemma</td>
+                  <td>MediaPipe</td>
+                  <td>~3 GB</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td>Logged In</td>
+                </tr>
+                <tr>
+                  <td class="model-name">Gemma 3n E4B</td>
+                  <td>Gemma</td>
+                  <td>MediaPipe</td>
+                  <td>~4.3 GB</td>
+                  <td><span class="check">&#10003;</span></td>
+                  <td>Logged In</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Model sizes are approximate download sizes. Larger models generally produce higher quality output but
+            require
+            more RAM and generate tokens more slowly. Models marked as multi-modal support image and PDF input alongside
+            text.</p>
+
+          <h3>Supporting models</h3>
+          <p>ThinkHere also uses the following models behind the scenes for Pro features. All run entirely on-device via
+            WebGPU &mdash; no data is sent to any server.</p>
+
+          <div class="models-table-wrap">
+            <table class="models-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Purpose</th>
+                  <th>Runtime</th>
+                  <th>Size</th>
+                  <th>Tier</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="model-name">Qwen3 Embedding 0.6B</td>
+                  <td>Knowledge base embeddings (RAG)</td>
+                  <td>Transformers.js · ONNX Runtime</td>
+                  <td>—</td>
+                  <td>Pro</td>
+                </tr>
+                <tr>
+                  <td class="model-name">Whisper Large V3 Turbo</td>
+                  <td>Voice transcription</td>
+                  <td>Transformers.js · ONNX Runtime</td>
+                  <td>—</td>
+                  <td>Pro</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="doc-section" id="quick-models">
+          <h2>Device Requirements</h2>
+          <p>ThinkHere runs AI inference on your local hardware, so device capability matters.</p>
+
+          <div class="req-grid">
+            <div class="req-item">
+              <div class="req-label">Browser</div>
+              <div class="req-value">Chrome 113+, Edge 113+, Safari 18+</div>
+            </div>
+            <div class="req-item">
+              <div class="req-label">API</div>
+              <div class="req-value">WebGPU required</div>
+            </div>
+            <div class="req-item">
+              <div class="req-label">Memory</div>
+              <div class="req-value">Minimum 4 GB RAM for SmolLM2 1.7B</div>
+            </div>
+            <div class="req-item">
+              <div class="req-label">Best Experience</div>
+              <div class="req-value">Desktop or laptop with dedicated or integrated GPU</div>
+            </div>
+            <div class="req-item warning">
+              <div class="req-label">iPhone</div>
+              <div class="req-value dim">Not supported &mdash; iOS memory limits prevent model loading</div>
+            </div>
+            <div class="req-item">
+              <div class="req-label">iPad</div>
+              <div class="req-value dim">M-series iPads may work, though experience varies</div>
+            </div>
+          </div>
+        </section>
+
+<section class="doc-section" id="getting-started">
           <h2 class="section-title">Getting Started</h2>
 
           <article class="article" id="what-is-thinkhere">
