@@ -16,6 +16,7 @@ const MODEL = {
 };
 
 let webllmEngine = null;
+let pendingFiles = [];
 let isGenerating = false;
 let shouldStop = false;
 let stopResolve = null;
@@ -678,7 +679,22 @@ window.sendMessage = async function () {
 
   const userBubble = appendMessage("user", text);
 
-  chatHistory.push({ role: "user", content: text });
+  // Show attached files summary
+  if (pendingFiles.length > 0) {
+    const fileInfo = document.createElement("div");
+    fileInfo.className = "message-files";
+    fileInfo.textContent = `[${pendingFiles.length} file(s) attached as context]`;
+    userBubble.appendChild(fileInfo);
+  }
+
+  // Build final user content with file context
+  let userContent = text;
+  if (pendingFiles.length > 0) {
+    const fileContext = pendingFiles.map(f => `--- File: ${f.name} ---\n${f.content}`).join("\n\n");
+    userContent = `${text}\n\n[Attached file context]\n${fileContext}`;
+  }
+
+  chatHistory.push({ role: "user", content: userContent });
   await saveConversation();
   await renderConversationList();
   input.value = "";
@@ -714,6 +730,7 @@ window.sendMessage = async function () {
     }
 
     chatHistory.push({ role: "assistant", content: fullResponse });
+    pendingFiles = [];
 
     // Save to IndexedDB and generate label after first exchange
     const isFirstExchange = chatHistory.filter(m => m.role === "assistant").length === 1;
@@ -745,6 +762,8 @@ window.sendMessage = async function () {
 
   isGenerating = false;
   shouldStop = false;
+  pendingFiles = [];
+  updateFilePreview();
   hideStopButton();
   document.getElementById("sendBtn").disabled = false;
   document.getElementById("userInput").focus();
@@ -771,13 +790,70 @@ function hideStopButton() {
 window.newChat = async function () {
   chatHistory = [];
   currentConvId = null;
+  pendingFiles = [];
+  updateFilePreview();
   const container = document.getElementById("messages");
   container.innerHTML = '<div class="message system">New conversation · all processing happens here</div>';
   await renderConversationList();
   updateTokenCount();
 };
 
+// ── File Upload as Context ──
+window.handleFileUpload = function (input) {
+  const files = Array.from(input.files || []);
+  if (files.length === 0) return;
+  input.value = "";
 
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result;
+      pendingFiles.push({ name: file.name, content, size: file.size });
+      updateFilePreview();
+    };
+    reader.readAsText(file);
+  }
+};
+
+function updateFilePreview() {
+  const container = document.getElementById("filePreview");
+  if (!container) return;
+  if (pendingFiles.length === 0) {
+    container.classList.remove("active");
+    container.innerHTML = "";
+    return;
+  }
+  container.classList.add("active");
+  container.innerHTML = pendingFiles.map((f, i) => {
+    const sizeLabel = f.size >= 1000 ? `${(f.size / 1000).toFixed(1)} KB` : `${f.size} B`;
+    return `<div class="file-thumb">
+      <span class="file-icon">📄</span>
+      <span>${escapeHtml(f.name)} (${sizeLabel})</span>
+      <button class="remove-attach" onclick="removeFile(${i})">×</button>
+    </div>`;
+  }).join("");
+}
+
+window.removeFile = function (idx) {
+  pendingFiles.splice(idx, 1);
+  updateFilePreview();
+};
+
+// ── Drag & drop file handler ──
+document.addEventListener("dragover", (e) => { e.preventDefault(); });
+document.addEventListener("drop", (e) => {
+  e.preventDefault();
+  if (!webllmEngine) return;
+  const files = Array.from(e.dataTransfer?.files || []);
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      pendingFiles.push({ name: file.name, content: ev.target.result, size: file.size });
+      updateFilePreview();
+    };
+    reader.readAsText(file);
+  }
+});
 
 function escapeHtml(str) {
   const div = document.createElement("div");
